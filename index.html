@@ -1,845 +1,743 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard de Férias</title>
-    <!-- Tailwind CSS para estilização e Inter para a fonte -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6; /* Fundo levemente cinzento */
-        }
-        .dashboard-container {
-            max-width: 1400px;
-        }
-        .card {
-            background-color: #ffffff; /* Fundo branco para os cards */
-        }
-        .modal {
-            background-color: rgba(0, 0, 0, 0.7);
-            transition: opacity 0.3s ease;
-        }
-        .btn-primary {
-            background-color: #10b981; /* Verde vibrante */
-            border-color: #10b981;
-        }
-        .btn-primary:hover {
-            background-color: #059669; /* Verde mais escuro no hover */
-        }
-        .btn-secondary {
-            background-color: #6b7280; /* Cinza para botões secundários */
-        }
-        .btn-secondary:hover {
-            background-color: #4b5563;
-        }
-        /* Cor de fundo para o cabeçalho e cor dos títulos em azul marinho */
-        .header-bg {
-            background-color: #0b1f3c;
-        }
-        .text-marinho {
-            color: #0b1f3c;
-        }
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            #relatorio-print, #relatorio-print * {
-                visibility: visible;
-            }
-            #relatorio-print {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Controle de Férias</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b1020; --panel:#121832; --muted:#9aa3b2; --text:#e8ecf4; --brand:#4f8cff; --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444;
+      --border: #1f2746;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:linear-gradient(180deg,#070a16,#0b1020);color:var(--text)}
+    header{position:sticky;top:0;background:rgba(10,14,32,.7);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);z-index:20}
+    .wrap{max-width:1100px;margin:0 auto;padding:16px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--brand),#7aa9ff);display:grid;place-items:center;color:white;font-weight:800}
+    nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .tab{padding:10px 14px;border:1px solid var(--border);border-radius:12px;background:#0e1430;cursor:pointer}
+    .tab.active{background:var(--brand);border-color:transparent;color:white}
+    main{max-width:1100px;margin:18px auto;padding:0 16px 80px}
+    .grid{display:grid;grid-template-columns:1.2fr 2fr;gap:18px}
+    .card{background:var(--panel);border:1px solid var(--border);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    .card h3{margin:0 0 8px 0;font-size:18px}
+    .card .head{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .card .body{padding:16px}
+    label{font-size:12px;color:var(--muted);display:block;margin:10px 0 6px}
+    input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:#0f1532;color:var(--text)}
+    textarea{min-height:72px}
+    .row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .btn{padding:10px 14px;border:1px solid var(--border);background:#0e1430;border-radius:12px;color:var(--text);cursor:pointer}
+    .btn.primary{background:var(--brand);border-color:transparent;color:white;font-weight:600}
+    .btn.ghost{background:transparent}
+    .btn.danger{background:var(--danger);border-color:transparent}
+    .btn.warn{background:var(--warn);border-color:transparent}
+    .btnline{display:flex;gap:8px;flex-wrap:wrap}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left;font-size:13px}
+    th{color:#c7cde0;font-weight:600}
+    tr:hover{background:#0f1532}
+    .pill{padding:4px 8px;border-radius:999px;font-size:11px;border:1px solid var(--border);display:inline-block}
+    .pill.ok{background:rgba(34,197,94,.15);color:#a7f3d0}
+    .pill.warn{background:rgba(245,158,11,.15);color:#fde68a}
+    .pill.danger{background:rgba(239,68,68,.15);color:#fecaca}
+    .muted{color:var(--muted)}
+    .right{display:flex;gap:8px;align-items:center}
+    .hide{display:none}
+    footer{position:fixed;bottom:10px;left:0;right:0}
+    .bar{max-width:1100px;margin:0 auto;background:rgba(15,21,50,.9);backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:16px;padding:10px 14px;display:flex;gap:10px;align-items:center;justify-content:space-between}
+    .kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .kpi .box{padding:8px 10px;border:1px solid var(--border);border-radius:12px}
+    .kpi .box b{display:block;font-size:18px}
+    .search{flex:1}
+    .print-only{display:none}
+    @media (max-width: 940px){
+      .grid{grid-template-columns:1fr}
+      footer{position:static}
+    }
+    @media print{
+      header, footer, .tabbar, .no-print{display:none !important}
+      body{background:#fff;color:#000}
+      .card{box-shadow:none;border:1px solid #ddd}
+      .print-only{display:block}
+    }
+  </style>
 </head>
-<body class="flex flex-col items-center min-h-screen p-4 text-gray-800">
-
-    <div class="dashboard-container w-full mx-auto p-8 pt-0">
-        <!-- Cabeçalho do Dashboard -->
-        <header class="flex justify-between items-center mb-8 p-6 header-bg rounded-b-xl shadow-xl -mx-8 -mt-8">
-            <h1 class="text-4xl font-bold text-white">Dashboard de Férias</h1>
-            <div id="user-id" class="text-xs text-gray-400 bg-gray-700 p-2 rounded-md font-mono">ID do Usuário: <span class="font-bold">Carregando...</span></div>
-        </header>
-
-        <!-- Cards de Resumo -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="card p-6 rounded-lg shadow-lg border border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-600">Total de Colaboradores</h2>
-                <p id="total-colaboradores" class="text-5xl font-bold text-green-500 mt-4">0</p>
-            </div>
-            <div class="card p-6 rounded-lg shadow-lg border border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-600">Férias Agendadas este Ano</h2>
-                <p id="ferias-ano-atual" class="text-5xl font-bold text-green-500 mt-4">0</p>
-            </div>
-            <div class="card p-6 rounded-lg shadow-lg border border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-600">Férias Vencidas</h2>
-                <p id="ferias-vencidas" class="text-5xl font-bold text-red-500 mt-4">0</p>
-            </div>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="brand">
+        <div class="logo">F</div>
+        <div>
+          <div style="font-weight:700">Controle de Férias</div>
+          <div class="muted" style="font-size:12px">Colaboradores • Terceirizados • Prestadores</div>
         </div>
+      </div>
+      <nav class="tabbar">
+        <button class="tab active" data-tab="funcionarios">Funcionários</button>
+        <button class="tab" data-tab="ferias">Férias</button>
+        <button class="tab" data-tab="relatorios">Relatórios</button>
+        <button class="tab" data-tab="config">Configuração</button>
+      </nav>
+    </div>
+  </header>
 
-        <!-- Formulários de Ações -->
-        <div class="grid md:grid-cols-2 gap-6 mb-8">
-            <!-- Formulário para Adicionar/Editar Funcionário -->
-            <div class="card p-6 rounded-lg shadow-lg border border-gray-200">
-                <h2 class="text-2xl font-semibold text-marinho mb-4" id="form-colaborador-titulo">Adicionar Colaborador</h2>
-                <form id="form-adicionar-colaborador" class="space-y-4">
-                    <input type="hidden" id="colaborador-id-edit">
-                    <div>
-                        <label for="nome" class="block text-sm font-medium text-gray-600">Nome:</label>
-                        <input type="text" id="nome" class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-gray-800 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required>
-                    </div>
-                    <div>
-                        <label for="admissao" class="block text-sm font-medium text-gray-600">Data de Admissão:</label>
-                        <input type="date" id="admissao" class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-gray-800 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required>
-                    </div>
-                    <div class="flex space-x-2">
-                        <button type="submit" id="btn-salvar-colaborador" class="w-full py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white btn-primary transition duration-150 ease-in-out">Adicionar</button>
-                        <button type="button" id="btn-cancelar-edicao" class="w-full py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white btn-secondary transition duration-150 ease-in-out hidden">Cancelar</button>
-                    </div>
-                </form>
+  <main>
+    <!-- FUNCIONÁRIOS -->
+    <section id="funcionarios" class="grid">
+      <div class="card">
+        <div class="head"><h3 id="formFuncTitle">Adicionar Funcionário</h3></div>
+        <div class="body">
+          <form id="formFuncionario" autocomplete="off">
+            <input type="hidden" id="f_id">
+            <label>Nome</label>
+            <input id="f_nome" required>
+            <div class="row">
+              <div>
+                <label>Cargo/Função</label>
+                <input id="f_cargo">
+              </div>
+              <div>
+                <label>Tipo</label>
+                <select id="f_tipo">
+                  <option>CLT</option>
+                  <option>Terceirizado</option>
+                  <option>Prestador</option>
+                </select>
+              </div>
             </div>
-
-            <!-- Formulário para Adicionar Férias -->
-            <div class="card p-6 rounded-lg shadow-lg border border-gray-200">
-                <h2 class="text-2xl font-semibold text-marinho mb-4">Agendar Férias</h2>
-                <form id="form-adicionar-ferias" class="space-y-4">
-                    <div>
-                        <label for="colaborador-select" class="block text-sm font-medium text-gray-600">Colaborador:</label>
-                        <select id="colaborador-select" class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-gray-800 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required>
-                            <option value="">Selecione...</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="inicio-ferias" class="block text-sm font-medium text-gray-600">Início das Férias:</label>
-                        <input type="date" id="inicio-ferias" class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-gray-800 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required>
-                    </div>
-                    <div>
-                        <label for="dias-gozados" class="block text-sm font-medium text-gray-600">Dias Gozados:</label>
-                        <input type="number" id="dias-gozados" class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-gray-800 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required min="0" value="0">
-                    </div>
-                    <div>
-                        <label for="dias-vendidos" class="block text-sm font-medium text-gray-600">Dias Vendidos:</label>
-                        <input type="number" id="dias-vendidos" class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-gray-800 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required min="0" value="0">
-                    </div>
-                    <button type="submit" class="w-full py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white btn-primary transition duration-150 ease-in-out">Agendar</button>
-                </form>
+            <div class="row">
+              <div>
+                <label>Data de Admissão</label>
+                <input type="date" id="f_admissao">
+              </div>
+              <div>
+                <label>Dias de direito/ano</label>
+                <input type="number" id="f_dias_direito" value="30" min="0" max="60">
+              </div>
             </div>
+            <div class="row">
+              <div>
+                <label>Período Aquisitivo (Início)</label>
+                <input type="date" id="f_aquisitivo_ini">
+              </div>
+              <div>
+                <label>Período Aquisitivo (Fim)</label>
+                <input type="date" id="f_aquisitivo_fim">
+              </div>
+            </div>
+            <label>Observações</label>
+            <textarea id="f_obs"></textarea>
+            <div class="btnline" style="margin-top:10px">
+              <button class="btn primary" type="submit">Salvar</button>
+              <button class="btn" type="reset" id="btnFuncionarioReset">Limpar</button>
+              <button class="btn danger hide" type="button" id="btnFuncionarioCancelarEdicao">Cancelar edição</button>
+            </div>
+          </form>
         </div>
+      </div>
 
-        <!-- Seção de Filtro e Relatório -->
-        <div class="card p-6 rounded-lg shadow-lg border border-gray-200 mb-8">
-            <h2 class="text-2xl font-semibold text-marinho mb-4">Relatório Geral</h2>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                    <label for="filtro-ano" class="block text-sm font-medium text-gray-600">Ano:</label>
-                    <select id="filtro-ano" class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-gray-800 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border">
-                        <option value="">Todos</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="filtro-mes" class="block text-sm font-medium text-gray-600">Mês:</label>
-                    <select id="filtro-mes" class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-gray-800 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border">
-                        <option value="">Todos</option>
-                    </select>
-                </div>
-                <div class="flex items-end space-x-2 col-span-2">
-                    <button id="btn-filtrar" class="w-full py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white btn-primary transition duration-150 ease-in-out">Gerar Relatório</button>
-                    <button id="btn-imprimir" class="w-full py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white btn-secondary transition duration-150 ease-in-out">Imprimir</button>
-                </div>
-            </div>
+      <div class="card">
+        <div class="head">
+          <h3>Lista de Funcionários</h3>
+          <div class="right">
+            <input class="search" id="buscaFuncionario" placeholder="Buscar por nome, cargo ou tipo...">
+            <button class="btn" id="btnExportarFuncionarios" title="Exportar JSON">Exportar</button>
+            <label class="btn ghost" for="importFuncFile">Importar</label>
+            <input id="importFuncFile" type="file" accept="application/json" class="hide" />
+          </div>
         </div>
+        <div class="body">
+          <table id="tFuncionarios">
+            <thead>
+              <tr>
+                <th>Nome</th><th>Cargo</th><th>Tipo</th><th>Admissão</th><th>Dias/ano</th><th>Período Aquisitivo</th><th>Ações</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
 
-        <!-- Tabela de Controle -->
-        <div id="relatorio-print" class="overflow-x-auto rounded-lg shadow-lg border border-gray-200">
-            <div id="loading" class="text-center p-4 text-gray-600">A carregar dados...</div>
-            <table class="min-w-full divide-y divide-gray-200 bg-white hidden" id="tabela-principal">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Admissão</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Período Aquisitivo</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Período Concessivo</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Saldo a Gozar</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lembrete Vencimento</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Férias Agendadas</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="tabela-corpo" class="divide-y divide-gray-200">
-                    <!-- Linhas da tabela serão inseridas aqui via JavaScript -->
-                </tbody>
+    <!-- FÉRIAS -->
+    <section id="ferias" class="grid hide">
+      <div class="card">
+        <div class="head"><h3 id="formFeriasTitle">Agendar/Registrar Férias</h3></div>
+        <div class="body">
+          <form id="formFerias" autocomplete="off">
+            <input type="hidden" id="v_id">
+            <div class="row">
+              <div>
+                <label>Funcionário</label>
+                <select id="v_funcionario" required></select>
+              </div>
+              <div>
+                <label>Status</label>
+                <select id="v_status">
+                  <option>Agendado</option>
+                  <option>Gozado</option>
+                  <option>Vencido</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div>
+                <label>Data de Programação</label>
+                <input type="date" id="v_programacao">
+              </div>
+              <div>
+                <label>Período Aquisitivo (ex: 2023-2024)</label>
+                <input id="v_aquisitivo" placeholder="AAAA-AAAA">
+              </div>
+            </div>
+            <div class="row">
+              <div>
+                <label>Início das Férias</label>
+                <input type="date" id="v_inicio">
+              </div>
+              <div>
+                <label>Fim das Férias</label>
+                <input type="date" id="v_fim">
+              </div>
+            </div>
+            <div class="row">
+              <div>
+                <label>Dias Gozados</label>
+                <input type="number" id="v_dias" min="0" max="60" placeholder="Calcula automático pelas datas">
+              </div>
+              <div>
+                <label>Vencimento (limite p/ concessão)</label>
+                <input type="date" id="v_vencimento">
+              </div>
+            </div>
+            <label>Observações</label>
+            <textarea id="v_obs"></textarea>
+            <div class="btnline" style="margin-top:10px">
+              <button class="btn primary" type="submit">Salvar</button>
+              <button class="btn" type="reset" id="btnFeriasReset">Limpar</button>
+              <button class="btn danger hide" type="button" id="btnFeriasCancelarEdicao">Cancelar edição</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="head">
+          <h3>Escala e Registros</h3>
+          <div class="right">
+            <input class="search" id="buscaFerias" placeholder="Buscar por nome ou período...">
+            <select id="filtroStatus">
+              <option value="">Todos os status</option>
+              <option>Agendado</option>
+              <option>Gozado</option>
+              <option>Vencido</option>
+            </select>
+          </div>
+        </div>
+        <div class="body">
+          <table id="tFerias">
+            <thead>
+              <tr>
+                <th>Funcionário</th><th>Período</th><th>Programação</th><th>Início</th><th>Fim</th><th>Dias</th><th>Vencimento</th><th>Status</th><th>Ações</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- RELATÓRIOS -->
+    <section id="relatorios" class="hide">
+      <div class="card">
+        <div class="head">
+          <h3>Relatórios</h3>
+          <div class="right no-print">
+            <select id="r_ano"></select>
+            <select id="r_mes">
+              <option value="">Mês (todos)</option>
+            </select>
+            <button class="btn" id="btnFiltrarRelatorio">Filtrar</button>
+            <button class="btn" id="btnLimparRelatorio">Limpar</button>
+            <button class="btn primary" id="btnImprimir">Imprimir</button>
+          </div>
+        </div>
+        <div class="body">
+          <div class="kpi print-only" id="tituloRelatorio"></div>
+          <div class="kpi" id="kpis">
+            <div class="box"><span class="muted">Registros no período</span><b id="kpiRegistros">0</b></div>
+            <div class="box"><span class="muted">Dias gozados</span><b id="kpiDias">0</b></div>
+            <div class="box"><span class="muted">Vencendo (≤30 dias)</span><b id="kpiVencendo">0</b></div>
+            <div class="box"><span class="muted">Vencidos</span><b id="kpiVencidos">0</b></div>
+          </div>
+          <div style="margin-top:12px">
+            <table id="tRelatorio">
+              <thead>
+                <tr>
+                  <th>Funcionário</th><th>Tipo</th><th>Período Aquisitivo</th><th>Início</th><th>Fim</th><th>Dias</th><th>Status</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
             </table>
+          </div>
         </div>
+      </div>
+    </section>
 
-    </div>
-
-    <!-- Modals -->
-    <!-- Modal de Confirmação para Deletar Colaborador -->
-    <div id="delete-colaborador-modal" class="modal fixed inset-0 flex items-center justify-center z-50 hidden">
-        <div class="bg-white text-gray-800 rounded-lg shadow-xl p-6 w-96 border border-gray-200">
-            <h3 class="text-xl font-semibold mb-4">Confirmação de Exclusão</h3>
-            <p>Tem a certeza que deseja deletar o colaborador <span id="colaborador-nome-delete" class="font-bold"></span>?</p>
-            <div class="flex justify-end mt-6 space-x-2">
-                <button id="cancel-delete-colaborador" class="py-2 px-4 rounded-md btn-secondary hover:bg-gray-600 text-white">Cancelar</button>
-                <button id="confirm-delete-colaborador" class="py-2 px-4 rounded-md bg-red-600 hover:bg-red-700 text-white">Deletar</button>
+    <!-- CONFIG -->
+    <section id="config" class="hide">
+      <div class="card">
+        <div class="head"><h3>Configuração de Dados</h3></div>
+        <div class="body">
+          <p class="muted">Por padrão, os dados ficam salvos no seu navegador (localStorage). Opcionalmente, conecte a um projeto Firebase Firestore para sincronizar na nuvem (grátis no plano Spark).</p>
+          <h4>Modo Local (padrão)</h4>
+          <div class="btnline">
+            <button class="btn" id="btnBackup">Baixar backup (.json)</button>
+            <label class="btn ghost" for="restoreFile">Restaurar</label>
+            <input id="restoreFile" type="file" accept="application/json" class="hide" />
+            <button class="btn warn" id="btnZerarLocal">Zerar dados locais</button>
+          </div>
+          <hr style="border-color:var(--border);margin:18px 0">
+          <h4>Modo Nuvem (Firebase opcional)</h4>
+          <div class="row">
+            <div>
+              <label>firebaseConfig (JSON)</label>
+              <textarea id="cfgFirebase" placeholder='{"apiKey":"...","authDomain":"...","projectId":"..."}'></textarea>
             </div>
-        </div>
-    </div>
-
-    <!-- Modal para Editar Férias -->
-    <div id="edit-ferias-modal" class="modal fixed inset-0 flex items-center justify-center z-50 hidden">
-        <div class="bg-white text-gray-800 rounded-lg shadow-xl p-6 w-96 border border-gray-200">
-            <h3 class="text-xl font-semibold mb-4">Editar Férias</h3>
-            <form id="form-editar-ferias" class="space-y-4">
-                <input type="hidden" id="edit-ferias-colaborador-id">
-                <input type="hidden" id="edit-ferias-id">
-                <div>
-                    <label for="edit-inicio-ferias" class="block text-sm font-medium text-gray-600">Início das Férias:</label>
-                    <input type="date" id="edit-inicio-ferias" class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-gray-800 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required>
-                </div>
-                <div>
-                    <label for="edit-dias-gozados" class="block text-sm font-medium text-gray-600">Dias Gozados:</label>
-                    <input type="number" id="edit-dias-gozados" class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-gray-800 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required min="0">
-                </div>
-                <div>
-                    <label for="edit-dias-vendidos" class="block text-sm font-medium text-gray-600">Dias Vendidos:</label>
-                    <input type="number" id="edit-dias-vendidos" class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-gray-800 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required min="0">
-                </div>
-                <div class="flex items-center space-x-2 mt-4">
-                    <input type="checkbox" id="edit-gozada" class="h-4 w-4 text-green-600 rounded focus:ring-green-500">
-                    <label for="edit-gozada" class="text-sm font-medium text-gray-600">Férias Gozadas</label>
-                </div>
-                <div class="flex justify-end mt-6 space-x-2">
-                    <button type="button" id="cancel-edit-ferias" class="py-2 px-4 rounded-md btn-secondary hover:bg-gray-600 text-white">Cancelar</button>
-                    <button type="submit" class="py-2 px-4 rounded-md text-white btn-primary">Salvar Alterações</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <!-- Modal de Confirmação para Deletar Férias -->
-    <div id="delete-ferias-modal" class="modal fixed inset-0 flex items-center justify-center z-50 hidden">
-        <div class="bg-white text-gray-800 rounded-lg shadow-xl p-6 w-96 border border-gray-200">
-            <h3 class="text-xl font-semibold mb-4">Confirmação de Exclusão</h3>
-            <p>Tem a certeza que deseja deletar estas férias?</p>
-            <div class="flex justify-end mt-6 space-x-2">
-                <button id="cancel-delete-ferias" class="py-2 px-4 rounded-md btn-secondary hover:bg-gray-600 text-white">Cancelar</button>
-                <button id="confirm-delete-ferias" class="py-2 px-4 rounded-md bg-red-600 hover:bg-red-700 text-white">Deletar</button>
+            <div>
+              <label>ID da Organização/Empresa (namespace)</label>
+              <input id="cfgOrg" placeholder="ex.: onbehalf">
+              <label>Autenticação (e-mail anônimo)</label>
+              <select id="cfgAuth">
+                <option value="anon">Anônima</option>
+                <option value="none">Sem auth (somente leitura pública das regras)</option>
+              </select>
+              <div class="btnline" style="margin-top:12px">
+                <button class="btn" id="btnTestFirebase">Testar conexão</button>
+                <button class="btn primary" id="btnAtivarFirebase">Ativar</button>
+              </div>
+              <p class="muted" style="margin-top:8px">Após ativar, os dados passarão a ser salvos/consultados no Firestore. Use regras de segurança adequadas.</p>
             </div>
+          </div>
         </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="no-print">
+    <div class="bar">
+      <div class="right" style="gap:14px">
+        <div class="muted">Status do armazenamento:</div>
+        <div id="storeStatus" class="pill ok">Local</div>
+      </div>
+      <div class="right">
+        <small class="muted">Dica: use os filtros em Relatórios e clique em Imprimir para gerar PDF do mês/ano.</small>
+      </div>
     </div>
-    
-    <!-- Modal para Relatório Histórico de Férias por Colaborador -->
-    <div id="historico-ferias-modal" class="modal fixed inset-0 flex items-center justify-center z-50 hidden">
-        <div class="bg-white text-gray-800 rounded-lg shadow-xl p-6 w-11/12 max-w-2xl border border-gray-200">
-            <h3 class="text-xl font-semibold mb-4">Histórico de Férias de <span id="historico-colaborador-nome" class="font-bold"></span></h3>
-            <div class="overflow-x-auto rounded-lg border border-gray-200">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Período</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dias Gozados</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dias Vendidos</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="historico-ferias-corpo" class="divide-y divide-gray-200">
-                        <!-- Linhas da tabela serão inseridas aqui via JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-            <div class="flex justify-end mt-6">
-                <button id="close-historico-modal" class="py-2 px-4 rounded-md btn-secondary hover:bg-gray-600 text-white">Fechar</button>
-            </div>
-        </div>
-    </div>
+  </footer>
 
-    <!-- Caixa de Mensagens -->
-    <div id="message-box" class="fixed bottom-4 right-4 bg-gray-800 text-white p-4 rounded-lg shadow-xl hidden transition-opacity duration-300">
-        <p id="message-text"></p>
-    </div>
+  <!-- Firebase (opcional) -->
+  <script type="module" id="firebaseLoader">
+    // O carregamento real só acontecerá quando usuário ativar em Config.
+  </script>
 
-    <!-- Firebase SDKs -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+  <script>
+  // ======== Utilidades ========
+  const $ = (sel, ctx=document) => ctx.querySelector(sel);
+  const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
+  const fmtDate = d => d ? new Date(d).toLocaleDateString('pt-BR',{timeZone:'UTC'}) : '';
+  const parseDate = s => s ? new Date(s+'T00:00:00Z') : null;
+  const diffDaysInclusive = (a,b) => {
+    if(!a||!b) return 0; const ms = (parseDate(b)-parseDate(a));
+    return Math.floor(ms/86400000)+1; // inclui fim-de-semana
+  }
+  const uid = () => Math.random().toString(36).slice(2)+Date.now().toString(36);
+  const inNextDays = (dateStr, days=30) => {
+    if(!dateStr) return false; const d=parseDate(dateStr), now=new Date(); now.setUTCHours(0,0,0,0);
+    const diff=(d-now); return diff>=0 && diff<=days*86400000;
+  }
 
-        // === INICIALIZAÇÃO DO FIREBASE E VARIÁVEIS GLOBAIS ===
-        
-        // As credenciais do Firebase são fornecidas pelo ambiente. Usamos um fallback seguro.
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+  // ======== Camada de Dados (LocalStorage por padrão) ========
+  const Storage = (()=>{
+    const NS='ferias_app_v1';
+    const load = () => JSON.parse(localStorage.getItem(NS) || '{"funcionarios":[],"ferias":[],"cfg":{}}');
+    const save = (data) => localStorage.setItem(NS, JSON.stringify(data));
+    let data = load();
+    const api = {
+      mode: ()=> 'local',
+      getAll: (col)=> data[col] || [],
+      setAll: (col, arr)=> { data[col]=arr; save(data); return arr; },
+      push: (col, obj)=> { data[col].push(obj); save(data); return obj; },
+      update: (col, id, patch)=> { const i=data[col].findIndex(x=>x.id===id); if(i>-1){ data[col][i]={...data[col][i],...patch}; save(data); return data[col][i]; } return null; },
+      remove: (col, id)=> { data[col]=data[col].filter(x=>x.id!==id); save(data); },
+      backup: ()=> JSON.stringify(data, null, 2),
+      restore: (json)=> { data=JSON.parse(json); save(data); return data; },
+      getCfg: ()=> data.cfg || {},
+      setCfg: (cfg)=> { data.cfg=cfg; save(data); }
+    };
+    return api;
+  })();
 
-        // Inicializa os serviços do Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
+  // Firebase (ativado sob demanda)
+  let Cloud = null; // substitui Storage quando ativado
 
-        // Referências aos elementos do DOM para interação
-        const formColaborador = document.getElementById('form-adicionar-colaborador');
-        const formFerias = document.getElementById('form-adicionar-ferias');
-        const tabelaCorpo = document.getElementById('tabela-corpo');
-        const tabelaPrincipal = document.getElementById('tabela-principal');
-        const colaboradorSelect = document.getElementById('colaborador-select');
-        const filtroAno = document.getElementById('filtro-ano');
-        const filtroMes = document.getElementById('filtro-mes');
-        const btnFiltrar = document.getElementById('btn-filtrar');
-        const btnImprimir = document.getElementById('btn-imprimir');
-        const messageBox = document.getElementById('message-box');
-        const messageText = document.getElementById('message-text');
-        const loading = document.getElementById('loading');
-        const userIdDisplay = document.querySelector('#user-id span');
+  async function activateFirebase(cfgJson, org='default', authMode='anon'){
+    const cfg = JSON.parse(cfgJson);
+    const loader = document.createElement('script');
+    loader.type='module';
+    loader.textContent = `
+      import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js';
+      import { getFirestore, collection, getDocs, setDoc, doc, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js';
+      import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js';
+      const app = initializeApp(${JSON.stringify(cfg)});
+      const db = getFirestore(app);
+      const auth = getAuth(app);
+      const org = ${JSON.stringify(org)};
+      ${authMode==='anon' ? 'await signInAnonymously(auth);' : ''}
+      window.__db = db; window.__org = org;
+      window.__fns = { collection, getDocs, setDoc, doc, deleteDoc };
+    `;
+    document.body.appendChild(loader);
+    // aguarda carregar
+    await new Promise(r=>setTimeout(r,800));
 
-        // Referências para os cards de resumo do dashboard
-        const totalColaboradoresDisplay = document.getElementById('total-colaboradores');
-        const feriasAnoAtualDisplay = document.getElementById('ferias-ano-atual');
-        const feriasVencidasDisplay = document.getElementById('ferias-vencidas');
+    Cloud = {
+      mode: ()=> 'firebase',
+      async getAll(col){
+        const snap = await __fns.getDocs(__fns.collection(__db, `${__org}_${col}`));
+        const arr=[]; snap.forEach(d=>arr.push(d.data())); return arr;
+      },
+      async setAll(col, arr){
+        // sobrescreve: deleta todos e grava todos
+        const cur = await this.getAll(col);
+        const del = cur.map(o=> __fns.deleteDoc(__fns.doc(__db, `${__org}_${col}`, o.id)));
+        await Promise.allSettled(del);
+        const ops = arr.map(o=> __fns.setDoc(__fns.doc(__db, `${__org}_${col}`, o.id), o));
+        await Promise.all(ops); return arr;
+      },
+      async push(col, obj){ await __fns.setDoc(__fns.doc(__db, `${__org}_${col}`, obj.id), obj); return obj; },
+      async update(col, id, patch){ const all = await this.getAll(col); const obj = all.find(x=>x.id===id); if(!obj) return null; const merged={...obj,...patch}; await __fns.setDoc(__fns.doc(__db, `${__org}_${col}`, id), merged); return merged; },
+      async remove(col, id){ await __fns.deleteDoc(__fns.doc(__db, `${__org}_${col}`, id)); },
+      async backup(){ const funcionarios = await this.getAll('funcionarios'); const ferias = await this.getAll('ferias'); return JSON.stringify({funcionarios, ferias}, null, 2); },
+      async restore(json){ const d=JSON.parse(json); await this.setAll('funcionarios', d.funcionarios||[]); await this.setAll('ferias', d.ferias||[]); return d; },
+      getCfg(){ return { cloud:true, org } }, setCfg(cfg){}
+    };
 
-        // Referências para a funcionalidade de edição e deleção de colaborador
-        const formColaboradorTitulo = document.getElementById('form-colaborador-titulo');
-        const colaboradorIdEdit = document.getElementById('colaborador-id-edit');
-        const nomeInput = document.getElementById('nome');
-        const admissaoInput = document.getElementById('admissao');
-        const btnSalvarColaborador = document.getElementById('btn-salvar-colaborador');
-        const btnCancelarEdicao = document.getElementById('btn-cancelar-edicao');
-        const deleteColaboradorModal = document.getElementById('delete-colaborador-modal');
-        const colaboradorNomeDelete = document.getElementById('colaborador-nome-delete');
-        const confirmDeleteColaboradorBtn = document.getElementById('confirm-delete-colaborador');
-        const cancelDeleteColaboradorBtn = document.getElementById('cancel-delete-colaborador');
+    $('#storeStatus').textContent='Firebase';
+    $('#storeStatus').className='pill ok';
+  }
 
-        // Referências para a funcionalidade de edição e deleção de férias
-        const diasGozadosInput = document.getElementById('dias-gozados');
-        const diasVendidosInput = document.getElementById('dias-vendidos');
-        const editFeriasModal = document.getElementById('edit-ferias-modal');
-        const formEditarFerias = document.getElementById('form-editar-ferias');
-        const editFeriasColaboradorId = document.getElementById('edit-ferias-colaborador-id');
-        const editFeriasId = document.getElementById('edit-ferias-id');
-        const editInicioFeriasInput = document.getElementById('edit-inicio-ferias');
-        const editDiasGozadosInput = document.getElementById('edit-dias-gozados');
-        const editDiasVendidosInput = document.getElementById('edit-dias-vendidos');
-        const editGozadaInput = document.getElementById('edit-gozada');
-        const cancelEditFeriasBtn = document.getElementById('cancel-edit-ferias');
-        const deleteFeriasModal = document.getElementById('delete-ferias-modal');
-        const confirmDeleteFeriasBtn = document.getElementById('confirm-delete-ferias');
-        const cancelDeleteFeriasBtn = document.getElementById('cancel-delete-ferias');
+  // API de dados dinâmica
+  const DB = new Proxy({}, {
+    get(_,prop){
+      const target = Cloud || Storage;
+      return target[prop];
+    }
+  });
 
-        // Referências para o novo modal de histórico de férias
-        const historicoFeriasModal = document.getElementById('historico-ferias-modal');
-        const historicoColaboradorNome = document.getElementById('historico-colaborador-nome');
-        const historicoFeriasCorpo = document.getElementById('historico-ferias-corpo');
-        const closeHistoricoModalBtn = document.getElementById('close-historico-modal');
+  // ======== Estado/UI ========
+  const state = { funcionarios: [], ferias: [] };
 
-        // Variáveis de estado da aplicação
-        let funcionarios = [];
-        let userId = null;
+  async function loadAll(){
+    state.funcionarios = await DB.getAll('funcionarios');
+    state.ferias = await DB.getAll('ferias');
+    renderFuncionarios();
+    renderFerias();
+    renderRelatoriosInit();
+    fillFuncionariosSelect();
+  }
 
-        // === FUNÇÕES AUXILIARES E LÓGICA DA APLICAÇÃO ===
+  function renderFuncionarios(){
+    const q = ($('#buscaFuncionario').value||'').toLowerCase();
+    const tbody = $('#tFuncionarios tbody'); tbody.innerHTML='';
+    state.funcionarios
+      .filter(f => [f.nome,f.cargo,f.tipo].join(' ').toLowerCase().includes(q))
+      .sort((a,b)=> a.nome.localeCompare(b.nome,'pt'))
+      .forEach(f=>{
+        const tr = document.createElement('tr');
+        const per = f.aquisitivo_ini && f.aquisitivo_fim ? `${fmtDate(f.aquisitivo_ini)} – ${fmtDate(f.aquisitivo_fim)}` : '';
+        tr.innerHTML = `
+          <td>${f.nome||''}</td>
+          <td>${f.cargo||''}</td>
+          <td>${f.tipo||''}</td>
+          <td>${fmtDate(f.admissao)||''}</td>
+          <td>${f.dias_direito||''}</td>
+          <td>${per}</td>
+          <td>
+            <button class="btn" onclick='editFuncionario("${f.id}")'>Editar</button>
+            <button class="btn danger" onclick='delFuncionario("${f.id}")'>Excluir</button>
+          </td>`;
+        tbody.appendChild(tr);
+      });
+  }
 
-        /**
-         * Exibe uma mensagem temporária na caixa de mensagens no canto inferior direito.
-         * @param {string} text - O texto a ser exibido.
-         */
-        function showMessage(text) {
-            messageText.textContent = text;
-            messageBox.classList.remove('hidden');
-            messageBox.style.opacity = '1';
-            setTimeout(() => {
-                messageBox.style.opacity = '0';
-                setTimeout(() => messageBox.classList.add('hidden'), 300);
-            }, 3000);
+  function fillFuncionariosSelect(){
+    const sel = $('#v_funcionario'); sel.innerHTML='';
+    state.funcionarios.sort((a,b)=>a.nome.localeCompare(b.nome,'pt')).forEach(f=>{
+      const o=document.createElement('option'); o.value=f.id; o.textContent=f.nome; sel.appendChild(o);
+    });
+  }
+
+  function renderFerias(){
+    const q = ($('#buscaFerias').value||'').toLowerCase();
+    const fs = $('#filtroStatus').value || '';
+    const tbody = $('#tFerias tbody'); tbody.innerHTML='';
+    state.ferias
+      .map(v=> ({...v, funcionario: state.funcionarios.find(f=>f.id===v.funcionarioId)||{} }))
+      .filter(v=> (v.funcionario.nome||'').toLowerCase().includes(q) || (v.aquisitivo||'').toLowerCase().includes(q))
+      .filter(v=> !fs || v.status===fs)
+      .sort((a,b)=> (a.inicio||'').localeCompare(b.inicio||''))
+      .forEach(v=>{
+        const tr = document.createElement('tr');
+        let pillClass='ok', pillText='Dentro do prazo';
+        if(v.vencimento){
+          if(inNextDays(v.vencimento,30)) { pillClass='warn'; pillText='Vencendo'; }
+          const hoje = new Date(); hoje.setUTCHours(0,0,0,0);
+          if(parseDate(v.vencimento) < hoje) { pillClass='danger'; pillText='Vencido'; }
         }
+        tr.innerHTML = `
+          <td>${v.funcionario.nome||''}</td>
+          <td>${v.aquisitivo||''}</td>
+          <td>${fmtDate(v.programacao)||''}</td>
+          <td>${fmtDate(v.inicio)||''}</td>
+          <td>${fmtDate(v.fim)||''}</td>
+          <td>${v.dias||''}</td>
+          <td>${fmtDate(v.vencimento)||''} ${v.vencimento? `<span class="pill ${pillClass}">${pillText}</span>`:''}</td>
+          <td>${v.status||''}</td>
+          <td>
+            <button class="btn" onclick='editFerias("${v.id}")'>Editar</button>
+            <button class="btn danger" onclick='delFerias("${v.id}")'>Excluir</button>
+          </td>`;
+        tbody.appendChild(tr);
+      });
+  }
 
-        /**
-         * Salva os dados dos funcionários no Firestore.
-         * O documento é salvo no caminho 'artifacts/{appId}/users/{userId}/controle-ferias/dados'
-         * para garantir que cada usuário tenha os seus dados isolados e privados.
-         */
-        async function saveData() {
-            if (!userId) {
-                showMessage("Erro: Usuário não autenticado.");
-                return;
-            }
-            // Usa o ID persistente para a referência do Firestore
-            const docRef = doc(db, 'artifacts', appId, 'users', userId, 'controle-ferias', 'dados');
-            try {
-                // Serializa os dados para JSON para lidar com estruturas complexas e salvar no Firestore
-                const serializedData = JSON.stringify(funcionarios);
-                await setDoc(docRef, { data: serializedData });
-            } catch (error) {
-                console.error("Erro ao salvar dados: ", error);
-                showMessage("Erro ao salvar dados. Por favor, tente novamente.");
-            }
-        }
+  function renderRelatoriosInit(){
+    // popular anos e meses
+    const anos = new Set();
+    state.ferias.forEach(v=>{
+      if(v.inicio) anos.add(new Date(v.inicio).getUTCFullYear());
+      if(v.fim) anos.add(new Date(v.fim).getUTCFullYear());
+    });
+    const selAno = $('#r_ano'); selAno.innerHTML = '<option value="">Ano (todos)</option>' +
+      Array.from(anos).sort().map(a=>`<option>${a}</option>`).join('');
 
-        /**
-         * Calcula os períodos aquisitivo e concessivo a partir da data de admissão.
-         * @param {string} dataAdmissao - Data de admissão no formato YYYY-MM-DD.
-         * @returns {object} - Objeto com as datas dos períodos.
-         */
-        function calcularPeriodos(dataAdmissao) {
-            const admissao = new Date(dataAdmissao);
-            const aquisitivoFim = new Date(admissao);
-            aquisitivoFim.setFullYear(aquisitivoFim.getFullYear() + 1);
-            aquisitivoFim.setDate(aquisitivoFim.getDate() - 1);
+    const selMes = $('#r_mes');
+    const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    selMes.innerHTML = '<option value="">Mês (todos)</option>' + meses.map((m,i)=>`<option value="${i+1}">${m}</option>`).join('');
 
-            const concessivoFim = new Date(admissao);
-            concessivoFim.setFullYear(concessivoFim.getFullYear() + 2);
-            concessivoFim.setDate(concessivoFim.getDate() - 1);
+    renderRelatorio();
+  }
 
-            return {
-                aquisitivoInicio: admissao,
-                aquisitivoFim: aquisitivoFim,
-                concessivoFim: concessivoFim
-            };
-        }
+  function renderRelatorio(){
+    const ano = $('#r_ano').value;
+    const mes = $('#r_mes').value; // 1..12 ou ''
+    const tb = $('#tRelatorio tbody'); tb.innerHTML='';
 
-        /**
-         * Atualiza os cards de resumo com as métricas do dashboard.
-         */
-        function atualizarDashboardCards() {
-            const hoje = new Date();
-            const anoAtual = hoje.getFullYear();
+    const list = state.ferias.map(v=> ({...v, funcionario: state.funcionarios.find(f=>f.id===v.funcionarioId)||{} }))
+      .filter(v=> {
+        if(!ano && !mes) return true;
+        // considera registro se qualquer parte do período cair no filtro
+        const i = v.inicio? new Date(v.inicio): null;
+        const f = v.fim? new Date(v.fim): null;
+        const okAno = !ano || ((i&&i.getUTCFullYear()==ano) || (f&&f.getUTCFullYear()==ano));
+        const okMes = !mes || ((i&&(i.getUTCMonth()+1)==mes) || (f&&(f.getUTCMonth()+1)==mes));
+        return okAno && okMes;
+      });
 
-            const totalColaboradores = funcionarios.length;
-            const feriasAnoAtual = funcionarios.reduce((acc, curr) => {
-                return acc + curr.ferias.filter(f => new Date(f.dataInicio).getFullYear() === anoAtual).length;
-            }, 0);
-            const feriasVencidas = funcionarios.filter(func => {
-                const { concessivoFim } = calcularPeriodos(func.admissao);
-                return hoje > concessivoFim;
-            }).length;
+    let kDias=0, kVencendo=0, kVencidos=0;
 
-            totalColaboradoresDisplay.textContent = totalColaboradores;
-            feriasAnoAtualDisplay.textContent = feriasAnoAtual;
-            feriasVencidasDisplay.textContent = feriasVencidas;
-        }
+    list.forEach(v=>{
+      kDias += Number(v.dias||0);
+      if(v.vencimento){
+        if(inNextDays(v.vencimento,30)) kVencendo++;
+        const hoje = new Date(); hoje.setUTCHours(0,0,0,0);
+        if(parseDate(v.vencimento) < hoje) kVencidos++;
+      }
+      const tr=document.createElement('tr');
+      tr.innerHTML = `
+        <td>${v.funcionario.nome||''}</td>
+        <td>${v.funcionario.tipo||''}</td>
+        <td>${v.aquisitivo||''}</td>
+        <td>${fmtDate(v.inicio)||''}</td>
+        <td>${fmtDate(v.fim)||''}</td>
+        <td>${v.dias||''}</td>
+        <td>${v.status||''}</td>`;
+      tb.appendChild(tr);
+    });
 
-        /**
-         * Atualiza a tabela com os dados dos funcionários, aplicando filtros se existirem.
-         * @param {Array<Object>} dadosParaExibir - O array de funcionários a ser exibido.
-         */
-        function atualizarTabela(dadosParaExibir = funcionarios) {
-            tabelaCorpo.innerHTML = '';
-            
-            // Cria um array de todos os anos de férias e adiciona ao dropdown de filtro
-            const anos = [...new Set(funcionarios.flatMap(f => f.ferias.map(ferias => new Date(ferias.dataInicio).getFullYear())))].sort();
-            filtroAno.innerHTML = '<option value="">Todos</option>' + anos.map(ano => `<option value="${ano}">${ano}</option>`).join('');
+    $('#kpiRegistros').textContent = list.length;
+    $('#kpiDias').textContent = kDias;
+    $('#kpiVencendo').textContent = kVencendo;
+    $('#kpiVencidos').textContent = kVencidos;
 
-            // Adiciona meses ao dropdown de filtro
-            const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-            filtroMes.innerHTML = '<option value="">Todos</option>' + meses.map((mes, index) => `<option value="${index + 1}">${mes}</option>`).join('');
+    const anoTxt = ano? `Ano: ${ano}` : 'Todos os anos';
+    const mesTxt = mes? ` • Mês: ${$('#r_mes option:checked').textContent}` : '';
+    $('#tituloRelatorio').textContent = `Relatório de Férias — ${anoTxt}${mesTxt}`;
+  }
 
-            const formatter = new Intl.DateTimeFormat('pt-BR');
+  // ======== Handlers: Funcionários ========
+  $('#formFuncionario').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const f = {
+      id: $('#f_id').value || uid(),
+      nome: $('#f_nome').value.trim(),
+      cargo: $('#f_cargo').value.trim(),
+      tipo: $('#f_tipo').value,
+      admissao: $('#f_admissao').value || null,
+      dias_direito: Number($('#f_dias_direito').value||30),
+      aquisitivo_ini: $('#f_aquisitivo_ini').value || null,
+      aquisitivo_fim: $('#f_aquisitivo_fim').value || null,
+      obs: $('#f_obs').value.trim()
+    };
+    const exists = state.funcionarios.some(x=>x.id===f.id);
+    if(exists){ await DB.update('funcionarios', f.id, f); state.funcionarios=await DB.getAll('funcionarios'); }
+    else { await DB.push('funcionarios', f); state.funcionarios.push(f); }
+    e.target.reset(); $('#f_id').value='';
+    $('#formFuncTitle').textContent='Adicionar Funcionário';
+    $('#btnFuncionarioCancelarEdicao').classList.add('hide');
+    renderFuncionarios(); fillFuncionariosSelect();
+  });
 
-            // Itera sobre os dados para criar as linhas da tabela
-            dadosParaExibir.forEach(func => {
-                const { aquisitivoInicio, aquisitivoFim, concessivoFim } = calcularPeriodos(func.admissao);
-                const diasGozados = func.ferias.reduce((acc, curr) => acc + (curr.diasGozados || 0), 0);
-                const diasVendidos = func.ferias.reduce((acc, curr) => acc + (curr.diasVendidos || 0), 0);
-                const saldo = 30 - diasGozados - diasVendidos;
+  window.editFuncionario = (id)=>{
+    const f = state.funcionarios.find(x=>x.id===id); if(!f) return;
+    $('#formFuncTitle').textContent='Editar Funcionário';
+    $('#f_id').value=f.id; $('#f_nome').value=f.nome||''; $('#f_cargo').value=f.cargo||''; $('#f_tipo').value=f.tipo||'CLT';
+    $('#f_admissao').value=f.admissao||''; $('#f_dias_direito').value=f.dias_direito||30;
+    $('#f_aquisitivo_ini').value=f.aquisitivo_ini||''; $('#f_aquisitivo_fim').value=f.aquisitivo_fim||''; $('#f_obs').value=f.obs||'';
+    $('#btnFuncionarioCancelarEdicao').classList.remove('hide');
+  }
 
-                const hoje = new Date();
-                const lembreteVencimento = hoje > concessivoFim ? 'VENCIDO!' : formatter.format(concessivoFim);
-                const vencidoClass = hoje > concessivoFim ? 'font-bold text-red-500' : 'text-gray-500';
+  $('#btnFuncionarioCancelarEdicao').addEventListener('click',()=>{
+    $('#formFuncionario').reset(); $('#f_id').value='';
+    $('#formFuncTitle').textContent='Adicionar Funcionário';
+    $('#btnFuncionarioCancelarEdicao').classList.add('hide');
+  });
 
-                // Cria o HTML para as férias agendadas para cada funcionário
-                let feriasAgendadasHtml = `<div class="flex flex-col space-y-2">`;
-                if (func.ferias && func.ferias.length > 0) {
-                    const feriasOrdenadas = [...func.ferias].sort((a, b) => new Date(a.dataInicio) - new Date(b.dataInicio));
-                    feriasOrdenadas.forEach(feriasItem => {
-                        const statusText = feriasItem.gozada ? "Gozada" : "Agendada";
-                        const statusColor = feriasItem.gozada ? "text-green-500" : "text-yellow-500";
-                        feriasAgendadasHtml += `
-                            <div class="flex items-center justify-between p-2 bg-gray-100 rounded-md">
-                                <span class="text-xs font-medium text-gray-800">De ${formatter.format(new Date(feriasItem.dataInicio))} (${feriasItem.diasGozados || 0} gozados, ${feriasItem.diasVendidos || 0} vendidos)</span>
-                                <div>
-                                    <span class="mr-2 text-xs font-bold ${statusColor}">${statusText}</span>
-                                    <button data-colaborador-id="${func.id}" data-ferias-id="${feriasItem.id}" class="btn-editar-ferias text-blue-500 hover:text-blue-700 mr-2 text-sm">Editar</button>
-                                    <button data-colaborador-id="${func.id}" data-ferias-id="${feriasItem.id}" class="btn-deletar-ferias text-red-500 hover:text-red-700 text-sm">Deletar</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                } else {
-                    feriasAgendadasHtml += `<span class="text-sm text-gray-500">Nenhuma programada</span>`;
-                }
-                feriasAgendadasHtml += `</div>`;
+  window.delFuncionario = async (id)=>{
+    if(!confirm('Excluir funcionário e todos os registros de férias associados?')) return;
+    await DB.remove('funcionarios', id);
+    // remove férias associadas
+    (await DB.getAll('ferias')).filter(v=>v.funcionarioId===id).forEach(async v=> await DB.remove('ferias', v.id));
+    state.funcionarios = await DB.getAll('funcionarios');
+    state.ferias = await DB.getAll('ferias');
+    renderFuncionarios(); renderFerias(); fillFuncionariosSelect();
+  }
 
+  $('#buscaFuncionario').addEventListener('input', renderFuncionarios);
 
-                const row = document.createElement('tr');
-                row.className = 'hover:bg-gray-50';
+  $('#btnExportarFuncionarios').addEventListener('click', ()=>{
+    const blob = new Blob([Storage.backup()], {type:'application/json'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='backup_ferias.json'; a.click();
+  });
+  $('#importFuncFile').addEventListener('change', async (e)=>{
+    const file=e.target.files[0]; if(!file) return; const text=await file.text();
+    await Storage.restore(text); state.funcionarios=Storage.getAll('funcionarios'); state.ferias=Storage.getAll('ferias');
+    renderFuncionarios(); renderFerias(); fillFuncionariosSelect(); renderRelatoriosInit();
+  });
 
-                row.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">${func.nome}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatter.format(new Date(func.admissao))}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatter.format(aquisitivoInicio)} a ${formatter.format(aquisitivoFim)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatter.format(concessivoFim)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-green-500">${saldo}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm ${vencidoClass}">${lembreteVencimento}</td>
-                    <td class="px-6 py-4 text-sm text-gray-500">${feriasAgendadasHtml}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button data-id="${func.id}" class="btn-ver-historico text-blue-500 hover:text-blue-700 mr-2">Histórico</button>
-                        <button data-id="${func.id}" class="btn-editar-colaborador text-blue-500 hover:text-blue-700 mr-2">Editar</button>
-                        <button data-id="${func.id}" class="btn-deletar-colaborador text-red-500 hover:text-red-700">Deletar</button>
-                    </td>
-                `;
-                tabelaCorpo.appendChild(row);
-            });
+  // ======== Handlers: Férias ========
+  // cálculo automático de dias
+  $('#v_inicio').addEventListener('change', ()=>{ const d=diffDaysInclusive($('#v_inicio').value,$('#v_fim').value); if(d>0) $('#v_dias').value=d; });
+  $('#v_fim').addEventListener('change', ()=>{ const d=diffDaysInclusive($('#v_inicio').value,$('#v_fim').value); if(d>0) $('#v_dias').value=d; });
 
-            // Adiciona os event listeners após o preenchimento da tabela
-            document.querySelectorAll('.btn-editar-colaborador').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const id = e.target.dataset.id;
-                    const funcionario = funcionarios.find(f => f.id === id);
-                    if (funcionario) {
-                        formColaboradorTitulo.textContent = 'Editar Colaborador';
-                        btnSalvarColaborador.textContent = 'Salvar Alterações';
-                        btnCancelarEdicao.classList.remove('hidden');
-                        colaboradorIdEdit.value = funcionario.id;
-                        nomeInput.value = funcionario.nome;
-                        admissaoInput.value = funcionario.admissao;
-                    }
-                });
-            });
+  $('#formFerias').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const v = {
+      id: $('#v_id').value || uid(),
+      funcionarioId: $('#v_funcionario').value,
+      programacao: $('#v_programacao').value || null,
+      aquisitivo: $('#v_aquisitivo').value.trim(),
+      inicio: $('#v_inicio').value || null,
+      fim: $('#v_fim').value || null,
+      dias: Number($('#v_dias').value||0),
+      vencimento: $('#v_vencimento').value || null,
+      status: $('#v_status').value,
+      obs: $('#v_obs').value.trim()
+    };
+    const exists = state.ferias.some(x=>x.id===v.id);
+    if(exists){ await DB.update('ferias', v.id, v); state.ferias=await DB.getAll('ferias'); }
+    else { await DB.push('ferias', v); state.ferias.push(v); }
 
-            document.querySelectorAll('.btn-deletar-colaborador').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const id = e.target.dataset.id;
-                    const funcionario = funcionarios.find(f => f.id === id);
-                    if (funcionario) {
-                        colaboradorNomeDelete.textContent = funcionario.nome;
-                        deleteColaboradorModal.classList.remove('hidden');
-                        confirmDeleteColaboradorBtn.dataset.id = id;
-                    }
-                });
-            });
+    e.target.reset(); $('#v_id').value='';
+    $('#formFeriasTitle').textContent='Agendar/Registrar Férias';
+    $('#btnFeriasCancelarEdicao').classList.add('hide');
+    renderFerias(); renderRelatoriosInit();
+  });
 
-            document.querySelectorAll('.btn-ver-historico').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const id = e.target.dataset.id;
-                    const funcionario = funcionarios.find(f => f.id === id);
-                    if (funcionario) {
-                        historicoColaboradorNome.textContent = funcionario.nome;
-                        historicoFeriasCorpo.innerHTML = '';
-                        funcionario.ferias.forEach(feriasItem => {
-                            const statusText = feriasItem.gozada ? "Gozada" : "Agendada";
-                            const statusColor = feriasItem.gozada ? "text-green-500" : "text-yellow-500";
-                            const row = document.createElement('tr');
-                            row.className = 'hover:bg-gray-50';
-                            row.innerHTML = `
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">${formatter.format(new Date(feriasItem.dataInicio))}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${feriasItem.diasGozados || 0}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${feriasItem.diasVendidos || 0}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-bold ${statusColor}">${statusText}</td>
-                            `;
-                            historicoFeriasCorpo.appendChild(row);
-                        });
-                        historicoFeriasModal.classList.remove('hidden');
-                    }
-                });
-            });
-            
-            document.querySelectorAll('.btn-editar-ferias').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const colaboradorId = e.target.dataset.colaboradorId;
-                    const feriasId = e.target.dataset.feriasId;
-                    
-                    const funcionario = funcionarios.find(f => f.id === colaboradorId);
-                    const ferias = funcionario.ferias.find(f => f.id === feriasId);
+  window.editFerias = (id)=>{
+    const v = state.ferias.find(x=>x.id===id); if(!v) return;
+    $('#formFeriasTitle').textContent='Editar Férias';
+    $('#v_id').value=v.id; $('#v_funcionario').value=v.funcionarioId; $('#v_programacao').value=v.programacao||'';
+    $('#v_aquisitivo').value=v.aquisitivo||''; $('#v_inicio').value=v.inicio||''; $('#v_fim').value=v.fim||''; $('#v_dias').value=v.dias||'';
+    $('#v_vencimento').value=v.vencimento||''; $('#v_status').value=v.status||'Agendado'; $('#v_obs').value=v.obs||'';
+    $('#btnFeriasCancelarEdicao').classList.remove('hide');
+  }
+  $('#btnFeriasCancelarEdicao').addEventListener('click',()=>{
+    $('#formFerias').reset(); $('#v_id').value='';
+    $('#formFeriasTitle').textContent='Agendar/Registrar Férias';
+    $('#btnFeriasCancelarEdicao').classList.add('hide');
+  });
 
-                    if (ferias) {
-                        editFeriasColaboradorId.value = colaboradorId;
-                        editFeriasId.value = feriasId;
-                        editInicioFeriasInput.value = ferias.dataInicio;
-                        editDiasGozadosInput.value = ferias.diasGozados || 0;
-                        editDiasVendidosInput.value = ferias.diasVendidos || 0;
-                        editGozadaInput.checked = ferias.gozada;
-                        editFeriasModal.classList.remove('hidden');
-                    }
-                });
-            });
+  window.delFerias = async (id)=>{
+    if(!confirm('Excluir este registro de férias?')) return;
+    await DB.remove('ferias', id); state.ferias = await DB.getAll('ferias');
+    renderFerias(); renderRelatoriosInit();
+  }
 
-            document.querySelectorAll('.btn-deletar-ferias').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const colaboradorId = e.target.dataset.colaboradorId;
-                    const feriasId = e.target.dataset.feriasId;
-                    
-                    deleteFeriasModal.classList.remove('hidden');
-                    confirmDeleteFeriasBtn.dataset.colaboradorId = colaboradorId;
-                    confirmDeleteFeriasBtn.dataset.feriasId = feriasId;
-                });
-            });
-        }
+  $('#buscaFerias').addEventListener('input', renderFerias);
+  $('#filtroStatus').addEventListener('change', renderFerias);
 
-        /**
-         * Atualiza o dropdown de seleção de colaborador para o agendamento de férias.
-         */
-        function atualizarSelectColaboradores() {
-            colaboradorSelect.innerHTML = '<option value="">Selecione...</option>';
-            funcionarios.forEach(func => {
-                const option = document.createElement('option');
-                option.value = func.id;
-                option.textContent = func.nome;
-                colaboradorSelect.appendChild(option);
-            });
-        }
+  // ======== Handlers: Relatórios ========
+  $('#btnFiltrarRelatorio').addEventListener('click', renderRelatorio);
+  $('#btnLimparRelatorio').addEventListener('click', ()=>{ $('#r_ano').value=''; $('#r_mes').value=''; renderRelatorio(); });
+  $('#btnImprimir').addEventListener('click', ()=> window.print());
 
-        // === EVENT LISTENERS ===
+  // ======== Handlers: Config ========
+  $('#btnBackup').addEventListener('click', async ()=>{
+    const json = Cloud? await Cloud.backup() : Storage.backup();
+    const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([json],{type:'application/json'})); a.download='backup_ferias.json'; a.click();
+  });
+  $('#restoreFile').addEventListener('change', async (e)=>{
+    const file=e.target.files[0]; if(!file) return; const text=await file.text();
+    if(Cloud) await Cloud.restore(text); else Storage.restore(text);
+    await loadAll(); alert('Backup restaurado.');
+  });
+  $('#btnZerarLocal').addEventListener('click', ()=>{ if(confirm('Tem certeza que deseja APAGAR todos os dados locais?')){ localStorage.removeItem('ferias_app_v1'); location.reload(); } });
 
-        // Listener para o formulário de adicionar/editar colaborador
-        formColaborador.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const id = colaboradorIdEdit.value;
-            const nome = nomeInput.value;
-            const admissao = admissaoInput.value;
-            
-            if (id) { // Modo de edição
-                const funcionario = funcionarios.find(f => f.id === id);
-                if (funcionario) {
-                    funcionario.nome = nome;
-                    funcionario.admissao = admissao;
-                    showMessage('Colaborador editado com sucesso!');
-                }
-            } else { // Modo de adicionar
-                const novoId = crypto.randomUUID();
-                const novoFuncionario = {
-                    id: novoId,
-                    nome,
-                    admissao,
-                    ferias: []
-                };
-                funcionarios.push(novoFuncionario);
-                showMessage('Colaborador adicionado com sucesso!');
-            }
+  $('#btnTestFirebase').addEventListener('click', async ()=>{
+    try{ await activateFirebase($('#cfgFirebase').value.trim()||'{}', $('#cfgOrg').value.trim()||'default', $('#cfgAuth').value); alert('Conexão Firebase OK. Clique em Ativar para usar.');}
+    catch(e){ console.error(e); alert('Falha ao conectar. Verifique o JSON do firebaseConfig e as regras do Firestore.'); }
+  });
+  $('#btnAtivarFirebase').addEventListener('click', async ()=>{
+    try{
+      await activateFirebase($('#cfgFirebase').value.trim()||'{}', $('#cfgOrg').value.trim()||'default', $('#cfgAuth').value);
+      // migra dados locais para nuvem (opcional)
+      if(confirm('Deseja enviar os dados atuais para a nuvem?')){
+        await Cloud.setAll('funcionarios', state.funcionarios);
+        await Cloud.setAll('ferias', state.ferias);
+      }
+      await loadAll();
+    }catch(e){ alert('Erro ao ativar Firebase.'); }
+  });
 
-            saveData();
-            resetFormularioColaborador();
-        });
+  // ======== Navegação ========
+  $$('.tab').forEach(btn=> btn.addEventListener('click', ()=>{
+    $$('.tab').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
+    const tab = btn.dataset.tab; $$('#funcionarios, #ferias, #relatorios, #config').forEach(s=> s.classList.add('hide'));
+    $('#'+tab).classList.remove('hide');
+  }));
 
-        // Reseta o formulário do colaborador para o estado inicial
-        function resetFormularioColaborador() {
-            formColaboradorTitulo.textContent = 'Adicionar Colaborador';
-            btnSalvarColaborador.textContent = 'Adicionar';
-            btnCancelarEdicao.classList.add('hidden');
-            colaboradorIdEdit.value = '';
-            formColaborador.reset();
-        }
-
-        btnCancelarEdicao.addEventListener('click', resetFormularioColaborador);
-
-        // Listener para o formulário de agendar férias
-        formFerias.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const colaboradorId = document.getElementById('colaborador-select').value;
-            const dataInicio = document.getElementById('inicio-ferias').value;
-            const diasGozados = parseInt(diasGozadosInput.value);
-            const diasVendidos = parseInt(diasVendidosInput.value);
-            const totalDias = diasGozados + diasVendidos;
-
-            const funcionario = funcionarios.find(f => f.id === colaboradorId);
-            if (funcionario) {
-                const diasTotaisGozados = funcionario.ferias.reduce((acc, curr) => acc + (curr.diasGozados || 0), 0);
-                const diasTotaisVendidos = funcionario.ferias.reduce((acc, curr) => acc + (curr.diasVendidos || 0), 0);
-                const saldo = 30 - diasTotaisGozados - diasTotaisVendidos;
-                
-                if (totalDias > saldo) {
-                    showMessage(`Erro: Saldo de férias insuficiente. Saldo atual: ${saldo} dias.`);
-                    return;
-                }
-
-                funcionario.ferias.push({
-                    id: crypto.randomUUID(),
-                    dataInicio,
-                    diasGozados,
-                    diasVendidos,
-                    gozada: false // Férias recém-adicionadas são sempre agendadas
-                });
-                
-                saveData();
-                formFerias.reset();
-                showMessage(`Férias agendadas para ${funcionario.nome}.`);
-            } else {
-                showMessage('Erro: Colaborador não encontrado.');
-            }
-        });
-
-        // Listener para o botão de filtrar/gerar relatório
-        btnFiltrar.addEventListener('click', () => {
-            const ano = filtroAno.value;
-            const mes = filtroMes.value;
-            
-            if (!ano && !mes) {
-                atualizarTabela(funcionarios);
-                return;
-            }
-
-            const dadosFiltrados = funcionarios.map(func => {
-                const feriasFiltradas = func.ferias.filter(ferias => {
-                    const data = new Date(ferias.dataInicio);
-                    const anoFerias = data.getFullYear();
-                    const mesFerias = data.getMonth() + 1; // getMonth() é 0-based
-
-                    const anoCorresponde = !ano || ano.toString() === anoFerias.toString();
-                    const mesCorresponde = !mes || mes.toString() === mesFerias.toString();
-
-                    return anoCorresponde && mesCorresponde;
-                });
-
-                // Se houver férias filtradas, retorna o funcionário com essas férias.
-                if (feriasFiltradas.length > 0) {
-                    return { ...func, ferias: feriasFiltradas };
-                }
-                return null;
-            }).filter(Boolean); // Remove funcionários sem férias no período filtrado
-
-            atualizarTabela(dadosFiltrados);
-        });
-
-        // Listener para o botão de imprimir o relatório
-        btnImprimir.addEventListener('click', () => {
-            window.print();
-        });
-
-        // Lógica dos modais de confirmação e edição
-        confirmDeleteColaboradorBtn.addEventListener('click', () => {
-            const id = confirmDeleteColaboradorBtn.dataset.id;
-            funcionarios = funcionarios.filter(f => f.id !== id);
-            saveData();
-            deleteColaboradorModal.classList.add('hidden');
-            showMessage('Colaborador deletado com sucesso!');
-        });
-
-        cancelDeleteColaboradorBtn.addEventListener('click', () => {
-            deleteColaboradorModal.classList.add('hidden');
-        });
-        
-        formEditarFerias.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const colaboradorId = editFeriasColaboradorId.value;
-            const feriasId = editFeriasId.value;
-            const dataInicio = editInicioFeriasInput.value;
-            const diasGozados = parseInt(editDiasGozadosInput.value);
-            const diasVendidos = parseInt(editDiasVendidosInput.value);
-            const gozada = editGozadaInput.checked;
-
-            const funcionario = funcionarios.find(f => f.id === colaboradorId);
-            if (funcionario) {
-                const ferias = funcionario.ferias.find(f => f.id === feriasId);
-                
-                // Calcula o saldo de férias sem contar a entrada que está sendo editada
-                const diasTotaisGozadosExcetoEste = funcionario.ferias.filter(f => f.id !== feriasId).reduce((acc, curr) => acc + (curr.diasGozados || 0), 0);
-                const diasTotaisVendidosExcetoEste = funcionario.ferias.filter(f => f.id !== feriasId).reduce((acc, curr) => acc + (curr.diasVendidos || 0), 0);
-                const saldoDisponivel = 30 - diasTotaisGozadosExcetoEste - diasTotaisVendidosExcetoEste;
-                const totalDias = diasGozados + diasVendidos;
-
-                if (totalDias > saldoDisponivel) {
-                    showMessage(`Erro: Saldo de férias insuficiente. Saldo disponível: ${saldoDisponivel} dias.`);
-                    return;
-                }
-                
-                if (ferias) {
-                    ferias.dataInicio = dataInicio;
-                    ferias.diasGozados = diasGozados;
-                    ferias.diasVendidos = diasVendidos;
-                    ferias.gozada = gozada; // Atualiza o novo campo
-                    saveData();
-                    editFeriasModal.classList.add('hidden');
-                    showMessage('Férias atualizadas com sucesso!');
-                }
-            }
-        });
-
-        cancelEditFeriasBtn.addEventListener('click', () => {
-            editFeriasModal.classList.add('hidden');
-        });
-
-        confirmDeleteFeriasBtn.addEventListener('click', () => {
-            const colaboradorId = confirmDeleteFeriasBtn.dataset.colaboradorId;
-            const feriasId = confirmDeleteFeriasBtn.dataset.ferias-id;
-
-            const funcionario = funcionarios.find(f => f.id === colaboradorId);
-            if (funcionario) {
-                funcionario.ferias = funcionario.ferias.filter(f => f.id !== feriasId);
-                saveData();
-                deleteFeriasModal.classList.add('hidden');
-                showMessage('Férias deletadas com sucesso!');
-            }
-        });
-
-        cancelDeleteFeriasBtn.addEventListener('click', () => {
-            deleteFeriasModal.classList.add('hidden');
-        });
-
-        closeHistoricoModalBtn.addEventListener('click', () => {
-            historicoFeriasModal.classList.add('hidden');
-        });
-
-        // === AUTENTICAÇÃO E CARREGAMENTO INICIAL DE DADOS ===
-        
-        // Listener de estado de autenticação. É o ponto de entrada para o carregamento de dados.
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                // Se estiver no ambiente do Canvas com um token, usa o ID do Firebase
-                userId = user.uid;
-            } else if (initialAuthToken) {
-                try {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                    userId = auth.currentUser.uid;
-                } catch (error) {
-                    console.error("Erro ao autenticar com token:", error);
-                    // Em caso de falha, tenta o login anónimo
-                    await signInAnonymously(auth);
-                    userId = auth.currentUser.uid;
-                }
-            } else {
-                // LÓGICA ADICIONADA PARA PERSISTÊNCIA DO USERID FORA DO AMBIENTE CANVAS
-                let storedUserId = localStorage.getItem('vacation-app-user-id');
-                if (!storedUserId) {
-                    storedUserId = `guest-${crypto.randomUUID()}`;
-                    localStorage.setItem('vacation-app-user-id', storedUserId);
-                }
-                userId = storedUserId;
-                // Não há necessidade de signInAnonymously, pois o userId já é persistente localmente
-                // e o Firestore pode ser acessado com um ID de utilizador definido.
-                // Esta abordagem permite que os dados persistam sem um login Firebase,
-                // usando apenas o localStorage para identificação.
-            }
-            
-            userIdDisplay.textContent = userId;
-
-            // O onSnapshot é um listener em tempo real. Ele será ativado sempre que os dados mudarem no Firestore.
-            const docRef = doc(db, 'artifacts', appId, 'users', userId, 'controle-ferias', 'dados');
-            onSnapshot(docRef, (doc) => {
-                if (doc.exists()) {
-                    // Desserializa os dados ao carregar
-                    const data = JSON.parse(doc.data().data);
-                    funcionarios = data;
-                } else {
-                    funcionarios = [];
-                }
-                
-                // Esconde o carregamento e mostra a tabela
-                loading.classList.add('hidden');
-                tabelaPrincipal.classList.remove('hidden');
-
-                // Atualiza a UI com os dados mais recentes
-                atualizarTabela();
-                atualizarSelectColaboradores();
-                atualizarDashboardCards();
-            }, (error) => {
-                console.oneerror("Erro ao carregar dados em tempo real: ", error);
-                showMessage("Erro ao carregar dados. Por favor, recarregue a página.");
-            });
-        });
-    </script>
-
+  // Init
+  (async function(){
+    await loadAll();
+  })();
+  </script>
 </body>
 </html>
