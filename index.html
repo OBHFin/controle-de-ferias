@@ -10,13 +10,13 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0b1f3c; /* Azul escuro predominante */
+            background-color: #f3f4f6; /* Fundo levemente cinzento */
         }
         .dashboard-container {
             max-width: 1400px;
         }
         .card {
-            background-color: #1a2a4b; /* Azul mais claro para os cards */
+            background-color: #ffffff; /* Fundo branco para os cards */
         }
         .modal {
             background-color: rgba(0, 0, 0, 0.7);
@@ -30,10 +30,17 @@
             background-color: #059669; /* Verde mais escuro no hover */
         }
         .btn-secondary {
-            background-color: #4a5568; /* Cinza para botões secundários */
+            background-color: #6b7280; /* Cinza para botões secundários */
         }
         .btn-secondary:hover {
-            background-color: #2d3748;
+            background-color: #4b5563;
+        }
+        /* Cor de fundo para o cabeçalho e cor dos títulos em azul marinho */
+        .header-bg {
+            background-color: #0b1f3c;
+        }
+        .text-marinho {
+            color: #0b1f3c;
         }
         @media print {
             body * {
@@ -51,27 +58,27 @@
         }
     </style>
 </head>
-<body class="flex flex-col items-center min-h-screen p-4 text-white">
+<body class="flex flex-col items-center min-h-screen p-4 text-gray-800">
 
     <div class="dashboard-container w-full mx-auto p-8 pt-0">
         <!-- Cabeçalho do Dashboard -->
-        <header class="flex justify-between items-center mb-8 p-6 bg-gray-800 rounded-b-xl shadow-xl -mx-8 -mt-8">
+        <header class="flex justify-between items-center mb-8 p-6 header-bg rounded-b-xl shadow-xl -mx-8 -mt-8">
             <h1 class="text-4xl font-bold text-white">Dashboard de Férias</h1>
             <div id="user-id" class="text-xs text-gray-400 bg-gray-700 p-2 rounded-md font-mono">ID do Usuário: <span class="font-bold">Carregando...</span></div>
         </header>
 
         <!-- Cards de Resumo -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="card p-6 rounded-lg shadow-lg border border-gray-700">
-                <h2 class="text-xl font-semibold text-gray-200">Total de Colaboradores</h2>
-                <p id="total-colaboradores" class="text-5xl font-bold text-green-400 mt-4">0</p>
+            <div class="card p-6 rounded-lg shadow-lg border border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-600">Total de Colaboradores</h2>
+                <p id="total-colaboradores" class="text-5xl font-bold text-green-500 mt-4">0</p>
             </div>
-            <div class="card p-6 rounded-lg shadow-lg border border-gray-700">
-                <h2 class="text-xl font-semibold text-gray-200">Férias Agendadas este Ano</h2>
-                <p id="ferias-ano-atual" class="text-5xl font-bold text-green-400 mt-4">0</p>
+            <div class="card p-6 rounded-lg shadow-lg border border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-600">Férias Agendadas este Ano</h2>
+                <p id="ferias-ano-atual" class="text-5xl font-bold text-green-500 mt-4">0</p>
             </div>
-            <div class="card p-6 rounded-lg shadow-lg border border-gray-700">
-                <h2 class="text-xl font-semibold text-gray-200">Férias Vencidas</h2>
+            <div class="card p-6 rounded-lg shadow-lg border border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-600">Férias Vencidas</h2>
                 <p id="ferias-vencidas" class="text-5xl font-bold text-red-500 mt-4">0</p>
             </div>
         </div>
@@ -79,17 +86,17 @@
         <!-- Formulários de Ações -->
         <div class="grid md:grid-cols-2 gap-6 mb-8">
             <!-- Formulário para Adicionar/Editar Funcionário -->
-            <div class="card p-6 rounded-lg shadow-lg border border-gray-700">
-                <h2 class="text-2xl font-semibold text-gray-200 mb-4" id="form-colaborador-titulo">Adicionar Colaborador</h2>
+            <div class="card p-6 rounded-lg shadow-lg border border-gray-200">
+                <h2 class="text-2xl font-semibold text-marinho mb-4" id="form-colaborador-titulo">Adicionar Colaborador</h2>
                 <form id="form-adicionar-colaborador" class="space-y-4">
                     <input type="hidden" id="colaborador-id-edit">
                     <div>
-                        <label for="nome" class="block text-sm font-medium text-gray-400">Nome:</label>
-                        <input type="text" id="nome" class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required>
+                        <label for="nome" class="block text-sm font-medium text-gray-600">Nome:</label>
+                        <input type="text" id="nome" class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-gray-800 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required>
                     </div>
                     <div>
-                        <label for="admissao" class="block text-sm font-medium text-gray-400">Data de Admissão:</label>
-                        <input type="date" id="admissao" class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required>
+                        <label for="admissao" class="block text-sm font-medium text-gray-600">Data de Admissão:</label>
+                        <input type="date" id="admissao" class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-gray-800 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required>
                     </div>
                     <div class="flex space-x-2">
                         <button type="submit" id="btn-salvar-colaborador" class="w-full py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white btn-primary transition duration-150 ease-in-out">Adicionar</button>
@@ -99,26 +106,26 @@
             </div>
 
             <!-- Formulário para Adicionar Férias -->
-            <div class="card p-6 rounded-lg shadow-lg border border-gray-700">
-                <h2 class="text-2xl font-semibold text-gray-200 mb-4">Agendar Férias</h2>
+            <div class="card p-6 rounded-lg shadow-lg border border-gray-200">
+                <h2 class="text-2xl font-semibold text-marinho mb-4">Agendar Férias</h2>
                 <form id="form-adicionar-ferias" class="space-y-4">
                     <div>
-                        <label for="colaborador-select" class="block text-sm font-medium text-gray-400">Colaborador:</label>
-                        <select id="colaborador-select" class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required>
+                        <label for="colaborador-select" class="block text-sm font-medium text-gray-600">Colaborador:</label>
+                        <select id="colaborador-select" class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-gray-800 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required>
                             <option value="">Selecione...</option>
                         </select>
                     </div>
                     <div>
-                        <label for="inicio-ferias" class="block text-sm font-medium text-gray-400">Início das Férias:</label>
-                        <input type="date" id="inicio-ferias" class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required>
+                        <label for="inicio-ferias" class="block text-sm font-medium text-gray-600">Início das Férias:</label>
+                        <input type="date" id="inicio-ferias" class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-gray-800 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required>
                     </div>
                     <div>
-                        <label for="dias-gozados" class="block text-sm font-medium text-gray-400">Dias Gozados:</label>
-                        <input type="number" id="dias-gozados" class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required min="0" value="0">
+                        <label for="dias-gozados" class="block text-sm font-medium text-gray-600">Dias Gozados:</label>
+                        <input type="number" id="dias-gozados" class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-gray-800 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required min="0" value="0">
                     </div>
                     <div>
-                        <label for="dias-vendidos" class="block text-sm font-medium text-gray-400">Dias Vendidos:</label>
-                        <input type="number" id="dias-vendidos" class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required min="0" value="0">
+                        <label for="dias-vendidos" class="block text-sm font-medium text-gray-600">Dias Vendidos:</label>
+                        <input type="number" id="dias-vendidos" class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-gray-800 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required min="0" value="0">
                     </div>
                     <button type="submit" class="w-full py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white btn-primary transition duration-150 ease-in-out">Agendar</button>
                 </form>
@@ -126,18 +133,18 @@
         </div>
 
         <!-- Seção de Filtro e Relatório -->
-        <div class="card p-6 rounded-lg shadow-lg border border-gray-700 mb-8">
-            <h2 class="text-2xl font-semibold text-gray-200 mb-4">Relatório Geral</h2>
+        <div class="card p-6 rounded-lg shadow-lg border border-gray-200 mb-8">
+            <h2 class="text-2xl font-semibold text-marinho mb-4">Relatório Geral</h2>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
-                    <label for="filtro-ano" class="block text-sm font-medium text-gray-400">Ano:</label>
-                    <select id="filtro-ano" class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border">
+                    <label for="filtro-ano" class="block text-sm font-medium text-gray-600">Ano:</label>
+                    <select id="filtro-ano" class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-gray-800 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border">
                         <option value="">Todos</option>
                     </select>
                 </div>
                 <div>
-                    <label for="filtro-mes" class="block text-sm font-medium text-gray-400">Mês:</label>
-                    <select id="filtro-mes" class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border">
+                    <label for="filtro-mes" class="block text-sm font-medium text-gray-600">Mês:</label>
+                    <select id="filtro-mes" class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-gray-800 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border">
                         <option value="">Todos</option>
                     </select>
                 </div>
@@ -149,22 +156,22 @@
         </div>
 
         <!-- Tabela de Controle -->
-        <div id="relatorio-print" class="overflow-x-auto rounded-lg shadow-lg border border-gray-700">
-            <div id="loading" class="text-center p-4 text-gray-400">A carregar dados...</div>
-            <table class="min-w-full divide-y divide-gray-700 bg-gray-800 hidden" id="tabela-principal">
-                <thead class="bg-gray-700">
+        <div id="relatorio-print" class="overflow-x-auto rounded-lg shadow-lg border border-gray-200">
+            <div id="loading" class="text-center p-4 text-gray-600">A carregar dados...</div>
+            <table class="min-w-full divide-y divide-gray-200 bg-white hidden" id="tabela-principal">
+                <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Nome</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Admissão</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Período Aquisitivo</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Período Concessivo</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Saldo a Gozar</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Lembrete Vencimento</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Férias Agendadas</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Ações</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Admissão</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Período Aquisitivo</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Período Concessivo</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Saldo a Gozar</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lembrete Vencimento</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Férias Agendadas</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
                     </tr>
                 </thead>
-                <tbody id="tabela-corpo" class="divide-y divide-gray-700">
+                <tbody id="tabela-corpo" class="divide-y divide-gray-200">
                     <!-- Linhas da tabela serão inseridas aqui via JavaScript -->
                 </tbody>
             </table>
@@ -175,37 +182,41 @@
     <!-- Modals -->
     <!-- Modal de Confirmação para Deletar Colaborador -->
     <div id="delete-colaborador-modal" class="modal fixed inset-0 flex items-center justify-center z-50 hidden">
-        <div class="bg-gray-800 text-white rounded-lg shadow-xl p-6 w-96 border border-gray-700">
+        <div class="bg-white text-gray-800 rounded-lg shadow-xl p-6 w-96 border border-gray-200">
             <h3 class="text-xl font-semibold mb-4">Confirmação de Exclusão</h3>
             <p>Tem a certeza que deseja deletar o colaborador <span id="colaborador-nome-delete" class="font-bold"></span>?</p>
             <div class="flex justify-end mt-6 space-x-2">
-                <button id="cancel-delete-colaborador" class="py-2 px-4 rounded-md btn-secondary hover:bg-gray-600">Cancelar</button>
-                <button id="confirm-delete-colaborador" class="py-2 px-4 rounded-md bg-red-600 hover:bg-red-700">Deletar</button>
+                <button id="cancel-delete-colaborador" class="py-2 px-4 rounded-md btn-secondary hover:bg-gray-600 text-white">Cancelar</button>
+                <button id="confirm-delete-colaborador" class="py-2 px-4 rounded-md bg-red-600 hover:bg-red-700 text-white">Deletar</button>
             </div>
         </div>
     </div>
 
     <!-- Modal para Editar Férias -->
     <div id="edit-ferias-modal" class="modal fixed inset-0 flex items-center justify-center z-50 hidden">
-        <div class="bg-gray-800 text-white rounded-lg shadow-xl p-6 w-96 border border-gray-700">
+        <div class="bg-white text-gray-800 rounded-lg shadow-xl p-6 w-96 border border-gray-200">
             <h3 class="text-xl font-semibold mb-4">Editar Férias</h3>
             <form id="form-editar-ferias" class="space-y-4">
                 <input type="hidden" id="edit-ferias-colaborador-id">
                 <input type="hidden" id="edit-ferias-id">
                 <div>
-                    <label for="edit-inicio-ferias" class="block text-sm font-medium text-gray-400">Início das Férias:</label>
-                    <input type="date" id="edit-inicio-ferias" class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required>
+                    <label for="edit-inicio-ferias" class="block text-sm font-medium text-gray-600">Início das Férias:</label>
+                    <input type="date" id="edit-inicio-ferias" class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-gray-800 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required>
                 </div>
                 <div>
-                    <label for="edit-dias-gozados" class="block text-sm font-medium text-gray-400">Dias Gozados:</label>
-                    <input type="number" id="edit-dias-gozados" class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required min="0">
+                    <label for="edit-dias-gozados" class="block text-sm font-medium text-gray-600">Dias Gozados:</label>
+                    <input type="number" id="edit-dias-gozados" class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-gray-800 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required min="0">
                 </div>
                 <div>
-                    <label for="edit-dias-vendidos" class="block text-sm font-medium text-gray-400">Dias Vendidos:</label>
-                    <input type="number" id="edit-dias-vendidos" class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required min="0">
+                    <label for="edit-dias-vendidos" class="block text-sm font-medium text-gray-600">Dias Vendidos:</label>
+                    <input type="number" id="edit-dias-vendidos" class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-gray-800 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required min="0">
+                </div>
+                <div class="flex items-center space-x-2 mt-4">
+                    <input type="checkbox" id="edit-gozada" class="h-4 w-4 text-green-600 rounded focus:ring-green-500">
+                    <label for="edit-gozada" class="text-sm font-medium text-gray-600">Férias Gozadas</label>
                 </div>
                 <div class="flex justify-end mt-6 space-x-2">
-                    <button type="button" id="cancel-edit-ferias" class="py-2 px-4 rounded-md btn-secondary hover:bg-gray-600">Cancelar</button>
+                    <button type="button" id="cancel-edit-ferias" class="py-2 px-4 rounded-md btn-secondary hover:bg-gray-600 text-white">Cancelar</button>
                     <button type="submit" class="py-2 px-4 rounded-md text-white btn-primary">Salvar Alterações</button>
                 </div>
             </form>
@@ -214,36 +225,37 @@
     
     <!-- Modal de Confirmação para Deletar Férias -->
     <div id="delete-ferias-modal" class="modal fixed inset-0 flex items-center justify-center z-50 hidden">
-        <div class="bg-gray-800 text-white rounded-lg shadow-xl p-6 w-96 border border-gray-700">
+        <div class="bg-white text-gray-800 rounded-lg shadow-xl p-6 w-96 border border-gray-200">
             <h3 class="text-xl font-semibold mb-4">Confirmação de Exclusão</h3>
             <p>Tem a certeza que deseja deletar estas férias?</p>
             <div class="flex justify-end mt-6 space-x-2">
-                <button id="cancel-delete-ferias" class="py-2 px-4 rounded-md btn-secondary hover:bg-gray-600">Cancelar</button>
-                <button id="confirm-delete-ferias" class="py-2 px-4 rounded-md bg-red-600 hover:bg-red-700">Deletar</button>
+                <button id="cancel-delete-ferias" class="py-2 px-4 rounded-md btn-secondary hover:bg-gray-600 text-white">Cancelar</button>
+                <button id="confirm-delete-ferias" class="py-2 px-4 rounded-md bg-red-600 hover:bg-red-700 text-white">Deletar</button>
             </div>
         </div>
     </div>
     
     <!-- Modal para Relatório Histórico de Férias por Colaborador -->
     <div id="historico-ferias-modal" class="modal fixed inset-0 flex items-center justify-center z-50 hidden">
-        <div class="bg-gray-800 text-white rounded-lg shadow-xl p-6 w-11/12 max-w-2xl border border-gray-700">
+        <div class="bg-white text-gray-800 rounded-lg shadow-xl p-6 w-11/12 max-w-2xl border border-gray-200">
             <h3 class="text-xl font-semibold mb-4">Histórico de Férias de <span id="historico-colaborador-nome" class="font-bold"></span></h3>
-            <div class="overflow-x-auto rounded-lg border border-gray-700">
-                <table class="min-w-full divide-y divide-gray-700">
-                    <thead class="bg-gray-700">
+            <div class="overflow-x-auto rounded-lg border border-gray-200">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Período</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Dias Gozados</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Dias Vendidos</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Período</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dias Gozados</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dias Vendidos</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                         </tr>
                     </thead>
-                    <tbody id="historico-ferias-corpo" class="divide-y divide-gray-700">
+                    <tbody id="historico-ferias-corpo" class="divide-y divide-gray-200">
                         <!-- Linhas da tabela serão inseridas aqui via JavaScript -->
                     </tbody>
                 </table>
             </div>
             <div class="flex justify-end mt-6">
-                <button id="close-historico-modal" class="py-2 px-4 rounded-md btn-secondary hover:bg-gray-600">Fechar</button>
+                <button id="close-historico-modal" class="py-2 px-4 rounded-md btn-secondary hover:bg-gray-600 text-white">Fechar</button>
             </div>
         </div>
     </div>
@@ -313,6 +325,7 @@
         const editInicioFeriasInput = document.getElementById('edit-inicio-ferias');
         const editDiasGozadosInput = document.getElementById('edit-dias-gozados');
         const editDiasVendidosInput = document.getElementById('edit-dias-vendidos');
+        const editGozadaInput = document.getElementById('edit-gozada');
         const cancelEditFeriasBtn = document.getElementById('cancel-edit-ferias');
         const deleteFeriasModal = document.getElementById('delete-ferias-modal');
         const confirmDeleteFeriasBtn = document.getElementById('confirm-delete-ferias');
@@ -354,6 +367,7 @@
                 showMessage("Erro: Usuário não autenticado.");
                 return;
             }
+            // Usa o ID persistente para a referência do Firestore
             const docRef = doc(db, 'artifacts', appId, 'users', userId, 'controle-ferias', 'dados');
             try {
                 // Serializa os dados para JSON para lidar com estruturas complexas e salvar no Firestore
@@ -434,19 +448,22 @@
 
                 const hoje = new Date();
                 const lembreteVencimento = hoje > concessivoFim ? 'VENCIDO!' : formatter.format(concessivoFim);
-                const vencidoClass = hoje > concessivoFim ? 'font-bold text-red-500' : 'text-gray-400';
+                const vencidoClass = hoje > concessivoFim ? 'font-bold text-red-500' : 'text-gray-500';
 
                 // Cria o HTML para as férias agendadas para cada funcionário
                 let feriasAgendadasHtml = `<div class="flex flex-col space-y-2">`;
                 if (func.ferias && func.ferias.length > 0) {
                     const feriasOrdenadas = [...func.ferias].sort((a, b) => new Date(a.dataInicio) - new Date(b.dataInicio));
                     feriasOrdenadas.forEach(feriasItem => {
+                        const statusText = feriasItem.gozada ? "Gozada" : "Agendada";
+                        const statusColor = feriasItem.gozada ? "text-green-500" : "text-yellow-500";
                         feriasAgendadasHtml += `
-                            <div class="flex items-center justify-between p-2 bg-gray-700 rounded-md">
-                                <span class="text-xs font-medium text-gray-200">De ${formatter.format(new Date(feriasItem.dataInicio))} (${feriasItem.diasGozados || 0} gozados, ${feriasItem.diasVendidos || 0} vendidos)</span>
+                            <div class="flex items-center justify-between p-2 bg-gray-100 rounded-md">
+                                <span class="text-xs font-medium text-gray-800">De ${formatter.format(new Date(feriasItem.dataInicio))} (${feriasItem.diasGozados || 0} gozados, ${feriasItem.diasVendidos || 0} vendidos)</span>
                                 <div>
-                                    <button data-colaborador-id="${func.id}" data-ferias-id="${feriasItem.id}" class="btn-editar-ferias text-green-500 hover:text-green-300 mr-2 text-sm">Editar</button>
-                                    <button data-colaborador-id="${func.id}" data-ferias-id="${feriasItem.id}" class="btn-deletar-ferias text-red-500 hover:text-red-300 text-sm">Deletar</button>
+                                    <span class="mr-2 text-xs font-bold ${statusColor}">${statusText}</span>
+                                    <button data-colaborador-id="${func.id}" data-ferias-id="${feriasItem.id}" class="btn-editar-ferias text-blue-500 hover:text-blue-700 mr-2 text-sm">Editar</button>
+                                    <button data-colaborador-id="${func.id}" data-ferias-id="${feriasItem.id}" class="btn-deletar-ferias text-red-500 hover:text-red-700 text-sm">Deletar</button>
                                 </div>
                             </div>
                         `;
@@ -458,20 +475,20 @@
 
 
                 const row = document.createElement('tr');
-                row.className = 'hover:bg-gray-700';
+                row.className = 'hover:bg-gray-50';
 
                 row.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">${func.nome}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">${formatter.format(new Date(func.admissao))}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">${formatter.format(aquisitivoInicio)} a ${formatter.format(aquisitivoFim)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">${formatter.format(concessivoFim)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-green-400">${saldo}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">${func.nome}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatter.format(new Date(func.admissao))}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatter.format(aquisitivoInicio)} a ${formatter.format(aquisitivoFim)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatter.format(concessivoFim)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-green-500">${saldo}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm ${vencidoClass}">${lembreteVencimento}</td>
-                    <td class="px-6 py-4 text-sm text-gray-400">${feriasAgendadasHtml}</td>
+                    <td class="px-6 py-4 text-sm text-gray-500">${feriasAgendadasHtml}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button data-id="${func.id}" class="btn-ver-historico text-green-500 hover:text-green-300 mr-2">Histórico</button>
-                        <button data-id="${func.id}" class="btn-editar-colaborador text-blue-500 hover:text-blue-300 mr-2">Editar</button>
-                        <button data-id="${func.id}" class="btn-deletar-colaborador text-red-500 hover:text-red-300">Deletar</button>
+                        <button data-id="${func.id}" class="btn-ver-historico text-blue-500 hover:text-blue-700 mr-2">Histórico</button>
+                        <button data-id="${func.id}" class="btn-editar-colaborador text-blue-500 hover:text-blue-700 mr-2">Editar</button>
+                        <button data-id="${func.id}" class="btn-deletar-colaborador text-red-500 hover:text-red-700">Deletar</button>
                     </td>
                 `;
                 tabelaCorpo.appendChild(row);
@@ -513,12 +530,15 @@
                         historicoColaboradorNome.textContent = funcionario.nome;
                         historicoFeriasCorpo.innerHTML = '';
                         funcionario.ferias.forEach(feriasItem => {
+                            const statusText = feriasItem.gozada ? "Gozada" : "Agendada";
+                            const statusColor = feriasItem.gozada ? "text-green-500" : "text-yellow-500";
                             const row = document.createElement('tr');
-                            row.className = 'hover:bg-gray-700';
+                            row.className = 'hover:bg-gray-50';
                             row.innerHTML = `
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-200">${formatter.format(new Date(feriasItem.dataInicio))}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">${feriasItem.diasGozados || 0}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">${feriasItem.diasVendidos || 0}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">${formatter.format(new Date(feriasItem.dataInicio))}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${feriasItem.diasGozados || 0}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${feriasItem.diasVendidos || 0}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-bold ${statusColor}">${statusText}</td>
                             `;
                             historicoFeriasCorpo.appendChild(row);
                         });
@@ -541,6 +561,7 @@
                         editInicioFeriasInput.value = ferias.dataInicio;
                         editDiasGozadosInput.value = ferias.diasGozados || 0;
                         editDiasVendidosInput.value = ferias.diasVendidos || 0;
+                        editGozadaInput.checked = ferias.gozada;
                         editFeriasModal.classList.remove('hidden');
                     }
                 });
@@ -638,7 +659,8 @@
                     id: crypto.randomUUID(),
                     dataInicio,
                     diasGozados,
-                    diasVendidos
+                    diasVendidos,
+                    gozada: false // Férias recém-adicionadas são sempre agendadas
                 });
                 
                 saveData();
@@ -706,6 +728,7 @@
             const dataInicio = editInicioFeriasInput.value;
             const diasGozados = parseInt(editDiasGozadosInput.value);
             const diasVendidos = parseInt(editDiasVendidosInput.value);
+            const gozada = editGozadaInput.checked;
 
             const funcionario = funcionarios.find(f => f.id === colaboradorId);
             if (funcionario) {
@@ -726,6 +749,7 @@
                     ferias.dataInicio = dataInicio;
                     ferias.diasGozados = diasGozados;
                     ferias.diasVendidos = diasVendidos;
+                    ferias.gozada = gozada; // Atualiza o novo campo
                     saveData();
                     editFeriasModal.classList.add('hidden');
                     showMessage('Férias atualizadas com sucesso!');
@@ -739,7 +763,7 @@
 
         confirmDeleteFeriasBtn.addEventListener('click', () => {
             const colaboradorId = confirmDeleteFeriasBtn.dataset.colaboradorId;
-            const feriasId = confirmDeleteFeriasBtn.dataset.feriasId;
+            const feriasId = confirmDeleteFeriasBtn.dataset.ferias-id;
 
             const funcionario = funcionarios.find(f => f.id === colaboradorId);
             if (funcionario) {
@@ -763,18 +787,33 @@
         // Listener de estado de autenticação. É o ponto de entrada para o carregamento de dados.
         onAuthStateChanged(auth, async (user) => {
             if (user) {
+                // Se estiver no ambiente do Canvas com um token, usa o ID do Firebase
                 userId = user.uid;
-                userIdDisplay.textContent = userId;
             } else if (initialAuthToken) {
                 try {
                     await signInWithCustomToken(auth, initialAuthToken);
+                    userId = auth.currentUser.uid;
                 } catch (error) {
                     console.error("Erro ao autenticar com token:", error);
+                    // Em caso de falha, tenta o login anónimo
                     await signInAnonymously(auth);
+                    userId = auth.currentUser.uid;
                 }
             } else {
-                await signInAnonymously(auth);
+                // LÓGICA ADICIONADA PARA PERSISTÊNCIA DO USERID FORA DO AMBIENTE CANVAS
+                let storedUserId = localStorage.getItem('vacation-app-user-id');
+                if (!storedUserId) {
+                    storedUserId = `guest-${crypto.randomUUID()}`;
+                    localStorage.setItem('vacation-app-user-id', storedUserId);
+                }
+                userId = storedUserId;
+                // Não há necessidade de signInAnonymously, pois o userId já é persistente localmente
+                // e o Firestore pode ser acessado com um ID de utilizador definido.
+                // Esta abordagem permite que os dados persistam sem um login Firebase,
+                // usando apenas o localStorage para identificação.
             }
+            
+            userIdDisplay.textContent = userId;
 
             // O onSnapshot é um listener em tempo real. Ele será ativado sempre que os dados mudarem no Firestore.
             const docRef = doc(db, 'artifacts', appId, 'users', userId, 'controle-ferias', 'dados');
