@@ -226,39 +226,28 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // ATENÇÃO: COLOQUE AQUI AS SUAS CREDENCIAIS DO FIREBASE
-        // Siga os passos abaixo para obter estas informações:
-        // 1. Acesse o console do Firebase: https://console.firebase.google.com/
-        // 2. Crie ou selecione um novo projeto.
-        // 3. Clique em "Definições do projeto" (o ícone da engrenagem).
-        // 4. Na seção "As tuas aplicações", clique no ícone </> para adicionar uma aplicação Web.
-        // 5. Copie o objeto 'firebaseConfig' que irá aparecer e cole-o abaixo.
-        // 6. Certifique-se de que o objeto está completo, incluindo o 'appId'.
+        // ATENÇÃO: AS SUAS CREDENCIAIS DO FIREBASE JÁ FORAM INSERIDAS ABAIXO.
+        // O código foi atualizado para usar a variável global __firebase_config, que é a forma correta no ambiente.
+        // const firebaseConfig = {
+        //      apiKey: "AIzaSyAdKRf3ybykrrNZrsgnmPkgcIuCpYfHqdQ",
+        //      authDomain: "controle-de-ferias-31b46.firebaseapp.com",
+        //      projectId: "controle-de-ferias-31b46",
+        //      storageBucket: "controle-de-ferias-31b46.firebasestorage.app",
+        //      messagingSenderId: "120318916633",
+        //      appId: "1:120318916633:web:581b064111ef9e2b41d288"
+        // };
         
-        const firebaseConfig = {
-           apiKey: "AIzaSyAdKRf3ybykrrNZrsgnmPkgcIuCpYfHqdQ",
-  authDomain: "controle-de-ferias-31b46.firebaseapp.com",
-  projectId: "controle-de-ferias-31b46",
-  storageBucket: "controle-de-ferias-31b46.firebasestorage.app",
-  messagingSenderId: "120318916633",
-  appId: "1:120318916633:web:581b064111ef9e2b41d288",
-  measurementId: "G-YTJNKW0PR4"
-};
+        // Uso da variável global fornecida pelo ambiente, com fallback
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+            apiKey: "AIzaSyAdKRf3ybykrrNZrsgnmPkgcIuCpYfHqdQ",
+            authDomain: "controle-de-ferias-31b46.firebaseapp.com",
+            projectId: "controle-de-ferias-31b46",
+            storageBucket: "controle-de-ferias-31b46.firebasestorage.app",
+            messagingSenderId: "120318916633",
+            appId: "1:120318916633:web:581b064111ef9e2b41d288"
         };
         
-        // Verifica se as credenciais do Firebase foram fornecidas
-        if (!firebaseConfig.projectId) {
-            console.error("Erro: As credenciais do Firebase não foram configuradas. Por favor, preencha o objeto 'firebaseConfig' no código.");
-            const errorMessage = "Erro: Por favor, configure as suas credenciais do Firebase no código para que o aplicativo funcione. Veja as instruções no código.";
-            const loading = document.getElementById('loading');
-            loading.textContent = errorMessage;
-            const userIdDisplay = document.querySelector('#user-id span');
-            userIdDisplay.textContent = 'Não configurado';
-            // Impede a execução de mais código relacionado ao Firebase
-            throw new Error(errorMessage);
-        }
-
-        const appId = firebaseConfig.appId || 'default-app-id';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         // Inicialização do Firebase
