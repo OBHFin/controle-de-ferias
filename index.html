@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Férias</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .modal {
+            background-color: rgba(0, 0, 0, 0.5);
+            transition: opacity 0.3s ease;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #relatorio-print, #relatorio-print * {
+                visibility: visible;
+            }
+            #relatorio-print {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="container mx-auto p-8 bg-white shadow-xl rounded-lg">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800">Controle de Férias</h1>
+            <div id="user-id" class="text-sm text-gray-500 bg-gray-100 p-2 rounded-md">ID do Usuário: <span class="font-mono">Carregando...</span></div>
+        </div>
+
+        <!-- Seção de Formulários -->
+        <div class="grid md:grid-cols-2 gap-8 mb-8">
+            <!-- Formulário para Adicionar/Editar Funcionário -->
+            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4" id="form-colaborador-titulo">Adicionar Colaborador</h2>
+                <form id="form-adicionar-colaborador" class="space-y-4">
+                    <input type="hidden" id="colaborador-id-edit">
+                    <div>
+                        <label for="nome" class="block text-sm font-medium text-gray-700">Nome:</label>
+                        <input type="text" id="nome" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required>
+                    </div>
+                    <div>
+                        <label for="admissao" class="block text-sm font-medium text-gray-700">Data de Admissão:</label>
+                        <input type="date" id="admissao" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button type="submit" id="btn-salvar-colaborador" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">Adicionar</button>
+                        <button type="button" id="btn-cancelar-edicao" class="w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out hidden">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Formulário para Adicionar Férias -->
+            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">Agendar Férias</h2>
+                <form id="form-adicionar-ferias" class="space-y-4">
+                    <div>
+                        <label for="colaborador-select" class="block text-sm font-medium text-gray-700">Colaborador:</label>
+                        <select id="colaborador-select" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required>
+                            <option value="">Selecione...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="inicio-ferias" class="block text-sm font-medium text-gray-700">Início das Férias:</label>
+                        <input type="date" id="inicio-ferias" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required>
+                    </div>
+                    <div>
+                        <label for="dias-gozados" class="block text-sm font-medium text-gray-700">Dias Gozados:</label>
+                        <input type="number" id="dias-gozados" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required min="0" value="0">
+                    </div>
+                    <div>
+                        <label for="dias-vendidos" class="block text-sm font-medium text-gray-700">Dias Vendidos:</label>
+                        <input type="number" id="dias-vendidos" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required min="0" value="0">
+                    </div>
+                    <button type="submit" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">Agendar</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Seção de Filtro e Relatório -->
+        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-8">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Consultar Relatório Geral</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label for="filtro-ano" class="block text-sm font-medium text-gray-700">Ano:</label>
+                    <select id="filtro-ano" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                        <option value="">Todos</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="filtro-mes" class="block text-sm font-medium text-gray-700">Mês:</label>
+                    <select id="filtro-mes" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                        <option value="">Todos</option>
+                    </select>
+                </div>
+                <div class="flex items-end space-x-2 mt-4 md:mt-0">
+                    <button id="btn-filtrar" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">Gerar Relatório</button>
+                    <button id="btn-imprimir" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out">Imprimir</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabela de Controle -->
+        <div id="relatorio-print" class="overflow-x-auto rounded-lg shadow-lg">
+            <div id="loading" class="text-center p-4 text-gray-500">Carregando dados...</div>
+            <table class="min-w-full divide-y divide-gray-200 bg-white hidden" id="tabela-principal">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Admissão</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Período Aquisitivo</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Período Concessivo</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lembrete Vencimento</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dias Gozados</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dias Vendidos</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Saldo a Gozar</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-corpo" class="bg-white divide-y divide-gray-200">
+                    <!-- Linhas da tabela serão inseridas aqui via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- Modal de Confirmação para Deletar Colaborador -->
+    <div id="delete-colaborador-modal" class="modal fixed inset-0 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-96">
+            <h3 class="text-xl font-semibold mb-4">Confirmação de Exclusão</h3>
+            <p>Você tem certeza que deseja deletar o colaborador <span id="colaborador-nome-delete" class="font-bold"></span>?</p>
+            <div class="flex justify-end mt-6 space-x-2">
+                <button id="cancel-delete-colaborador" class="py-2 px-4 bg-gray-200 rounded-md hover:bg-gray-300">Cancelar</button>
+                <button id="confirm-delete-colaborador" class="py-2 px-4 bg-red-600 text-white rounded-md hover:bg-red-700">Deletar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Editar Férias -->
+    <div id="edit-ferias-modal" class="modal fixed inset-0 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-96">
+            <h3 class="text-xl font-semibold mb-4">Editar Férias</h3>
+            <form id="form-editar-ferias" class="space-y-4">
+                <input type="hidden" id="edit-ferias-colaborador-id">
+                <input type="hidden" id="edit-ferias-id">
+                <div>
+                    <label for="edit-inicio-ferias" class="block text-sm font-medium text-gray-700">Início das Férias:</label>
+                    <input type="date" id="edit-inicio-ferias" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required>
+                </div>
+                <div>
+                    <label for="edit-dias-gozados" class="block text-sm font-medium text-gray-700">Dias Gozados:</label>
+                    <input type="number" id="edit-dias-gozados" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required min="0">
+                </div>
+                <div>
+                    <label for="edit-dias-vendidos" class="block text-sm font-medium text-gray-700">Dias Vendidos:</label>
+                    <input type="number" id="edit-dias-vendidos" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required min="0">
+                </div>
+                <div class="flex justify-end mt-6 space-x-2">
+                    <button type="button" id="cancel-edit-ferias" class="py-2 px-4 bg-gray-200 rounded-md hover:bg-gray-300">Cancelar</button>
+                    <button type="submit" class="py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal de Confirmação para Deletar Férias -->
+    <div id="delete-ferias-modal" class="modal fixed inset-0 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-96">
+            <h3 class="text-xl font-semibold mb-4">Confirmação de Exclusão</h3>
+            <p>Você tem certeza que deseja deletar estas férias?</p>
+            <div class="flex justify-end mt-6 space-x-2">
+                <button id="cancel-delete-ferias" class="py-2 px-4 bg-gray-200 rounded-md hover:bg-gray-300">Cancelar</button>
+                <button id="confirm-delete-ferias" class="py-2 px-4 bg-red-600 text-white rounded-md hover:bg-red-700">Deletar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para Relatório Histórico de Férias por Colaborador -->
+    <div id="historico-ferias-modal" class="modal fixed inset-0 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-11/12 max-w-2xl">
+            <h3 class="text-xl font-semibold mb-4">Histórico de Férias de <span id="historico-colaborador-nome" class="font-bold"></span></h3>
+            <div class="overflow-x-auto rounded-lg border border-gray-200">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Período</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dias Gozados</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dias Vendidos</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historico-ferias-corpo" class="bg-white divide-y divide-gray-200">
+                        <!-- Linhas da tabela serão inseridas aqui via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="flex justify-end mt-6">
+                <button id="close-historico-modal" class="py-2 px-4 bg-gray-200 rounded-md hover:bg-gray-300">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Box -->
+    <div id="message-box" class="fixed bottom-4 right-4 bg-gray-800 text-white p-4 rounded-lg shadow-xl hidden transition-opacity duration-300">
+        <p id="message-text"></p>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // ATENÇÃO: COLOQUE AQUI AS SUAS CREDENCIAIS DO FIREBASE
+        // Siga os passos abaixo para obter estas informações:
+        // 1. Acesse o console do Firebase: https://console.firebase.google.com/
+        // 2. Crie ou selecione um novo projeto.
+        // 3. Clique em "Definições do projeto" (o ícone da engrenagem).
+        // 4. Na seção "As tuas aplicações", clique no ícone </> para adicionar uma aplicação Web.
+        // 5. Copie o objeto 'firebaseConfig' que irá aparecer e cole-o abaixo.
+        // 6. Certifique-se de que o objeto está completo, incluindo o 'appId'.
+        
+        const firebaseConfig = {
+           apiKey: "AIzaSyAdKRf3ybykrrNZrsgnmPkgcIuCpYfHqdQ",
+  authDomain: "controle-de-ferias-31b46.firebaseapp.com",
+  projectId: "controle-de-ferias-31b46",
+  storageBucket: "controle-de-ferias-31b46.firebasestorage.app",
+  messagingSenderId: "120318916633",
+  appId: "1:120318916633:web:581b064111ef9e2b41d288",
+  measurementId: "G-YTJNKW0PR4"
+};
+        };
+        
+        // Verifica se as credenciais do Firebase foram fornecidas
+        if (!firebaseConfig.projectId) {
+            console.error("Erro: As credenciais do Firebase não foram configuradas. Por favor, preencha o objeto 'firebaseConfig' no código.");
+            const errorMessage = "Erro: Por favor, configure as suas credenciais do Firebase no código para que o aplicativo funcione. Veja as instruções no código.";
+            const loading = document.getElementById('loading');
+            loading.textContent = errorMessage;
+            const userIdDisplay = document.querySelector('#user-id span');
+            userIdDisplay.textContent = 'Não configurado';
+            // Impede a execução de mais código relacionado ao Firebase
+            throw new Error(errorMessage);
+        }
+
+        const appId = firebaseConfig.appId || 'default-app-id';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // Inicialização do Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Referências aos elementos do DOM
+        const formColaborador = document.getElementById('form-adicionar-colaborador');
+        const formFerias = document.getElementById('form-adicionar-ferias');
+        const tabelaCorpo = document.getElementById('tabela-corpo');
+        const tabelaPrincipal = document.getElementById('tabela-principal');
+        const colaboradorSelect = document.getElementById('colaborador-select');
+        const filtroAno = document.getElementById('filtro-ano');
+        const filtroMes = document.getElementById('filtro-mes');
+        const btnFiltrar = document.getElementById('btn-filtrar');
+        const btnImprimir = document.getElementById('btn-imprimir');
+        const messageBox = document.getElementById('message-box');
+        const messageText = document.getElementById('message-text');
+        const loading = document.getElementById('loading');
+        const userIdDisplay = document.querySelector('#user-id span');
+
+        // Referências para funcionalidade de edição e deleção de colaborador
+        const formColaboradorTitulo = document.getElementById('form-colaborador-titulo');
+        const colaboradorIdEdit = document.getElementById('colaborador-id-edit');
+        const nomeInput = document.getElementById('nome');
+        const admissaoInput = document.getElementById('admissao');
+        const btnSalvarColaborador = document.getElementById('btn-salvar-colaborador');
+        const btnCancelarEdicao = document.getElementById('btn-cancelar-edicao');
+        const deleteColaboradorModal = document.getElementById('delete-colaborador-modal');
+        const colaboradorNomeDelete = document.getElementById('colaborador-nome-delete');
+        const confirmDeleteColaboradorBtn = document.getElementById('confirm-delete-colaborador');
+        const cancelDeleteColaboradorBtn = document.getElementById('cancel-delete-colaborador');
+
+        // Referências para funcionalidade de edição e deleção de férias
+        const diasGozadosInput = document.getElementById('dias-gozados');
+        const diasVendidosInput = document.getElementById('dias-vendidos');
+        const editFeriasModal = document.getElementById('edit-ferias-modal');
+        const formEditarFerias = document.getElementById('form-editar-ferias');
+        const editFeriasColaboradorId = document.getElementById('edit-ferias-colaborador-id');
+        const editFeriasId = document.getElementById('edit-ferias-id');
+        const editInicioFeriasInput = document.getElementById('edit-inicio-ferias');
+        const editDiasGozadosInput = document.getElementById('edit-dias-gozados');
+        const editDiasVendidosInput = document.getElementById('edit-dias-vendidos');
+        const cancelEditFeriasBtn = document.getElementById('cancel-edit-ferias');
+        const deleteFeriasModal = document.getElementById('delete-ferias-modal');
+        const confirmDeleteFeriasBtn = document.getElementById('confirm-delete-ferias');
+        const cancelDeleteFeriasBtn = document.getElementById('cancel-delete-ferias');
+
+        // Referências para o novo modal de histórico de férias
+        const historicoFeriasModal = document.getElementById('historico-ferias-modal');
+        const historicoColaboradorNome = document.getElementById('historico-colaborador-nome');
+        const historicoFeriasCorpo = document.getElementById('historico-ferias-corpo');
+        const closeHistoricoModalBtn = document.getElementById('close-historico-modal');
+
+        let funcionarios = [];
+        let userId = null;
+
+        // Exibe uma mensagem na tela
+        function showMessage(text) {
+            messageText.textContent = text;
+            messageBox.classList.remove('hidden');
+            messageBox.style.opacity = '1';
+            setTimeout(() => {
+                messageBox.style.opacity = '0';
+                setTimeout(() => messageBox.classList.add('hidden'), 300);
+            }, 3000);
+        }
+
+        // Função para salvar os dados no Firestore
+        async function saveData() {
+            if (!userId) {
+                showMessage("Erro: Usuário não autenticado.");
+                return;
+            }
+            const docRef = doc(db, 'artifacts', appId, 'users', userId, 'controle-ferias', 'dados');
+            try {
+                // Serializa os dados para JSON para lidar com estruturas complexas
+                const serializedData = JSON.stringify(funcionarios);
+                await setDoc(docRef, { data: serializedData });
+            } catch (error) {
+                console.error("Erro ao salvar dados: ", error);
+                showMessage("Erro ao salvar dados. Por favor, tente novamente.");
+            }
+        }
+
+        // Função para calcular os períodos aquisitivos e concessivos
+        function calcularPeriodos(dataAdmissao) {
+            const admissao = new Date(dataAdmissao);
+            const aquisitivoFim = new Date(admissao);
+            aquisitivoFim.setFullYear(aquisitivoFim.getFullYear() + 1);
+            aquisitivoFim.setDate(aquisitivoFim.getDate() - 1);
+
+            const concessivoFim = new Date(admissao);
+            concessivoFim.setFullYear(concessivoFim.getFullYear() + 2);
+            concessivoFim.setDate(concessivoFim.getDate() - 1);
+
+            return {
+                aquisitivoInicio: admissao,
+                aquisitivoFim: aquisitivoFim,
+                concessivoFim: concessivoFim
+            };
+        }
+
+        // Atualiza a tabela com os dados dos funcionários
+        function atualizarTabela(dadosParaExibir = funcionarios) {
+            tabelaCorpo.innerHTML = '';
+            
+            // Cria um array de todos os anos de férias e adiciona ao dropdown de filtro
+            const anos = [...new Set(funcionarios.flatMap(f => f.ferias.map(ferias => new Date(ferias.dataInicio).getFullYear())))].sort();
+            filtroAno.innerHTML = '<option value="">Todos</option>' + anos.map(ano => `<option value="${ano}">${ano}</option>`).join('');
+
+            // Adiciona meses ao dropdown de filtro
+            const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            filtroMes.innerHTML = '<option value="">Todos</option>' + meses.map((mes, index) => `<option value="${index + 1}">${mes}</option>`).join('');
+
+            dadosParaExibir.forEach(func => {
+                const { aquisitivoInicio, aquisitivoFim, concessivoFim } = calcularPeriodos(func.admissao);
+                const diasGozados = func.ferias.reduce((acc, curr) => acc + (curr.diasGozados || 0), 0);
+                const diasVendidos = func.ferias.reduce((acc, curr) => acc + (curr.diasVendidos || 0), 0);
+                const saldo = 30 - diasGozados - diasVendidos;
+
+                const hoje = new Date();
+                const lembreteVencimento = hoje > concessivoFim;
+
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+
+                // Usando o Intl.DateTimeFormat para formatar datas para o Brasil
+                const formatter = new Intl.DateTimeFormat('pt-BR');
+                
+                let feriasAgendadasHtml = `<div class="flex flex-col space-y-2">`;
+                if (func.ferias && func.ferias.length > 0) {
+                    const feriasOrdenadas = [...func.ferias].sort((a, b) => new Date(a.dataInicio) - new Date(b.dataInicio));
+                    feriasOrdenadas.forEach(feriasItem => {
+                        feriasAgendadasHtml += `
+                            <div class="flex items-center justify-between p-2 bg-gray-100 rounded-md">
+                                <span class="text-xs font-medium text-gray-700">De ${formatter.format(new Date(feriasItem.dataInicio))} (${feriasItem.diasGozados || 0} dias gozados, ${feriasItem.diasVendidos || 0} dias vendidos)</span>
+                                <div>
+                                    <button data-colaborador-id="${func.id}" data-ferias-id="${feriasItem.id}" class="btn-editar-ferias text-indigo-600 hover:text-indigo-900 mr-2 text-sm">Editar</button>
+                                    <button data-colaborador-id="${func.id}" data-ferias-id="${feriasItem.id}" class="btn-deletar-ferias text-red-600 hover:text-red-900 text-sm">Deletar</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    feriasAgendadasHtml += `<span class="text-sm text-gray-500">Nenhuma programada</span>`;
+                }
+                feriasAgendadasHtml += `</div>`;
+
+
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${func.nome}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatter.format(new Date(func.admissao))}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatter.format(aquisitivoInicio)} a ${formatter.format(aquisitivoFim)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatter.format(concessivoFim)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 ${lembreteVencimento ? 'font-bold text-red-500' : ''}">${lembreteVencimento ? 'VENCIDO!' : formatter.format(concessivoFim)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${diasGozados}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${diasVendidos}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-bold">${saldo}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button data-id="${func.id}" class="btn-ver-historico text-green-600 hover:text-green-900 mr-2">Histórico</button>
+                        <button data-id="${func.id}" class="btn-editar-colaborador text-indigo-600 hover:text-indigo-900 mr-2">Editar</button>
+                        <button data-id="${func.id}" class="btn-deletar-colaborador text-red-600 hover:text-red-900">Deletar</button>
+                    </td>
+                `;
+                tabelaCorpo.appendChild(row);
+            });
+
+            // Adiciona listeners para os botões de editar, deletar e ver histórico
+            document.querySelectorAll('.btn-editar-colaborador').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.dataset.id;
+                    const funcionario = funcionarios.find(f => f.id === id);
+                    if (funcionario) {
+                        formColaboradorTitulo.textContent = 'Editar Colaborador';
+                        btnSalvarColaborador.textContent = 'Salvar Alterações';
+                        btnCancelarEdicao.classList.remove('hidden');
+                        colaboradorIdEdit.value = funcionario.id;
+                        nomeInput.value = funcionario.nome;
+                        admissaoInput.value = funcionario.admissao;
+                    }
+                });
+            });
+
+            document.querySelectorAll('.btn-deletar-colaborador').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.dataset.id;
+                    const funcionario = funcionarios.find(f => f.id === id);
+                    if (funcionario) {
+                        colaboradorNomeDelete.textContent = funcionario.nome;
+                        deleteColaboradorModal.classList.remove('hidden');
+                        confirmDeleteColaboradorBtn.dataset.id = id;
+                    }
+                });
+            });
+
+            document.querySelectorAll('.btn-ver-historico').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.dataset.id;
+                    const funcionario = funcionarios.find(f => f.id === id);
+                    if (funcionario) {
+                        historicoColaboradorNome.textContent = funcionario.nome;
+                        historicoFeriasCorpo.innerHTML = '';
+                        const formatter = new Intl.DateTimeFormat('pt-BR');
+                        funcionario.ferias.forEach(feriasItem => {
+                            const row = document.createElement('tr');
+                            row.className = 'hover:bg-gray-50';
+                            row.innerHTML = `
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${formatter.format(new Date(feriasItem.dataInicio))}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${feriasItem.diasGozados || 0}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${feriasItem.diasVendidos || 0}</td>
+                            `;
+                            historicoFeriasCorpo.appendChild(row);
+                        });
+                        historicoFeriasModal.classList.remove('hidden');
+                    }
+                });
+            });
+            
+            // Adiciona listeners para os botões de editar e deletar férias
+            document.querySelectorAll('.btn-editar-ferias').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const colaboradorId = e.target.dataset.colaboradorId;
+                    const feriasId = e.target.dataset.feriasId;
+                    
+                    const funcionario = funcionarios.find(f => f.id === colaboradorId);
+                    const ferias = funcionario.ferias.find(f => f.id === feriasId);
+
+                    if (ferias) {
+                        editFeriasColaboradorId.value = colaboradorId;
+                        editFeriasId.value = feriasId;
+                        editInicioFeriasInput.value = ferias.dataInicio;
+                        editDiasGozadosInput.value = ferias.diasGozados || 0;
+                        editDiasVendidosInput.value = ferias.diasVendidos || 0;
+                        editFeriasModal.classList.remove('hidden');
+                    }
+                });
+            });
+
+            document.querySelectorAll('.btn-deletar-ferias').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const colaboradorId = e.target.dataset.colaboradorId;
+                    const feriasId = e.target.dataset.feriasId;
+                    
+                    deleteFeriasModal.classList.remove('hidden');
+                    confirmDeleteFeriasBtn.dataset.colaboradorId = colaboradorId;
+                    confirmDeleteFeriasBtn.dataset.feriasId = feriasId;
+                });
+            });
+        }
+
+        // Atualiza o dropdown de seleção de colaborador
+        function atualizarSelectColaboradores() {
+            colaboradorSelect.innerHTML = '<option value="">Selecione...</option>';
+            funcionarios.forEach(func => {
+                const option = document.createElement('option');
+                option.value = func.id;
+                option.textContent = func.nome;
+                colaboradorSelect.appendChild(option);
+            });
+        }
+
+        // Adiciona ou edita um colaborador
+        formColaborador.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = colaboradorIdEdit.value;
+            const nome = nomeInput.value;
+            const admissao = admissaoInput.value;
+            
+            if (id) { // Modo de edição
+                const funcionario = funcionarios.find(f => f.id === id);
+                if (funcionario) {
+                    funcionario.nome = nome;
+                    funcionario.admissao = admissao;
+                    showMessage('Colaborador editado com sucesso!');
+                }
+            } else { // Modo de adicionar
+                const novoId = crypto.randomUUID();
+                const novoFuncionario = {
+                    id: novoId,
+                    nome,
+                    admissao,
+                    ferias: []
+                };
+                funcionarios.push(novoFuncionario);
+                showMessage('Colaborador adicionado com sucesso!');
+            }
+
+            saveData();
+            formColaborador.reset();
+            resetFormularioColaborador();
+        });
+
+        // Reseta o formulário para o modo de adicionar
+        function resetFormularioColaborador() {
+            formColaboradorTitulo.textContent = 'Adicionar Colaborador';
+            btnSalvarColaborador.textContent = 'Adicionar';
+            btnCancelarEdicao.classList.add('hidden');
+            colaboradorIdEdit.value = '';
+            formColaborador.reset();
+        }
+
+        btnCancelarEdicao.addEventListener('click', resetFormularioColaborador);
+
+        // Adiciona um novo agendamento de férias
+        formFerias.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const colaboradorId = document.getElementById('colaborador-select').value;
+            const dataInicio = document.getElementById('inicio-ferias').value;
+            const diasGozados = parseInt(diasGozadosInput.value);
+            const diasVendidos = parseInt(diasVendidosInput.value);
+            const totalDias = diasGozados + diasVendidos;
+
+            const funcionario = funcionarios.find(f => f.id === colaboradorId);
+            if (funcionario) {
+                const diasTotaisGozados = funcionario.ferias.reduce((acc, curr) => acc + (curr.diasGozados || 0), 0);
+                const diasTotaisVendidos = funcionario.ferias.reduce((acc, curr) => acc + (curr.diasVendidos || 0), 0);
+                const saldo = 30 - diasTotaisGozados - diasTotaisVendidos;
+                
+                if (totalDias > saldo) {
+                    showMessage(`Erro: Saldo de férias insuficiente. Saldo atual: ${saldo} dias.`);
+                    return;
+                }
+
+                funcionario.ferias.push({
+                    id: crypto.randomUUID(), // Adiciona um ID único para a entrada de férias
+                    dataInicio,
+                    diasGozados,
+                    diasVendidos
+                });
+                
+                saveData(); // Salva os dados após a alteração
+                formFerias.reset();
+                showMessage(`Férias agendadas para ${funcionario.nome}.`);
+            } else {
+                showMessage('Erro: Colaborador não encontrado.');
+            }
+        });
+
+        // Filtra a tabela para o relatório
+        btnFiltrar.addEventListener('click', () => {
+            const ano = filtroAno.value;
+            const mes = filtroMes.value;
+            
+            if (!ano && !mes) {
+                atualizarTabela(funcionarios);
+                return;
+            }
+
+            const dadosFiltrados = funcionarios.map(func => {
+                const feriasFiltradas = func.ferias.filter(ferias => {
+                    const data = new Date(ferias.dataInicio);
+                    const anoFerias = data.getFullYear();
+                    const mesFerias = data.getMonth() + 1; // getMonth() é 0-based
+
+                    const anoCorresponde = !ano || ano.toString() === anoFerias.toString();
+                    const mesCorresponde = !mes || mes.toString() === mesFerias.toString();
+
+                    return anoCorresponde && mesCorresponde;
+                });
+
+                if (feriasFiltradas.length > 0) {
+                    return { ...func, ferias: feriasFiltradas };
+                }
+                return null;
+            }).filter(Boolean); // Remove funcionários sem férias no período
+
+            atualizarTabela(dadosFiltrados);
+        });
+
+        // Imprime o relatório
+        btnImprimir.addEventListener('click', () => {
+            window.print();
+        });
+
+        // Lida com a deleção de colaborador
+        confirmDeleteColaboradorBtn.addEventListener('click', () => {
+            const id = confirmDeleteColaboradorBtn.dataset.id;
+            funcionarios = funcionarios.filter(f => f.id !== id);
+            saveData();
+            deleteColaboradorModal.classList.add('hidden');
+            showMessage('Colaborador deletado com sucesso!');
+        });
+
+        cancelDeleteColaboradorBtn.addEventListener('click', () => {
+            deleteColaboradorModal.classList.add('hidden');
+        });
+        
+        // Lida com a edição de férias
+        formEditarFerias.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const colaboradorId = editFeriasColaboradorId.value;
+            const feriasId = editFeriasId.value;
+            const dataInicio = editInicioFeriasInput.value;
+            const diasGozados = parseInt(editDiasGozadosInput.value);
+            const diasVendidos = parseInt(editDiasVendidosInput.value);
+
+            const funcionario = funcionarios.find(f => f.id === colaboradorId);
+            if (funcionario) {
+                const ferias = funcionario.ferias.find(f => f.id === feriasId);
+                const diasTotaisGozadosExcetoEste = funcionario.ferias.filter(f => f.id !== feriasId).reduce((acc, curr) => acc + (curr.diasGozados || 0), 0);
+                const diasTotaisVendidosExcetoEste = funcionario.ferias.filter(f => f.id !== feriasId).reduce((acc, curr) => acc + (curr.diasVendidos || 0), 0);
+                const saldoDisponivel = 30 - diasTotaisGozadosExcetoEste - diasTotaisVendidosExcetoEste;
+
+                const totalDias = diasGozados + diasVendidos;
+
+                if (totalDias > saldoDisponivel) {
+                    showMessage(`Erro: Saldo de férias insuficiente. Saldo disponível: ${saldoDisponivel} dias.`);
+                    return;
+                }
+                
+                if (ferias) {
+                    ferias.dataInicio = dataInicio;
+                    ferias.diasGozados = diasGozados;
+                    ferias.diasVendidos = diasVendidos;
+                    saveData();
+                    editFeriasModal.classList.add('hidden');
+                    showMessage('Férias atualizadas com sucesso!');
+                }
+            }
+        });
+
+        cancelEditFeriasBtn.addEventListener('click', () => {
+            editFeriasModal.classList.add('hidden');
+        });
+
+        // Lida com a deleção de férias
+        confirmDeleteFeriasBtn.addEventListener('click', () => {
+            const colaboradorId = confirmDeleteFeriasBtn.dataset.colaboradorId;
+            const feriasId = confirmDeleteFeriasBtn.dataset.feriasId;
+
+            const funcionario = funcionarios.find(f => f.id === colaboradorId);
+            if (funcionario) {
+                funcionario.ferias = funcionario.ferias.filter(f => f.id !== feriasId);
+                saveData();
+                deleteFeriasModal.classList.add('hidden');
+                showMessage('Férias deletadas com sucesso!');
+            }
+        });
+
+        cancelDeleteFeriasBtn.addEventListener('click', () => {
+            deleteFeriasModal.classList.add('hidden');
+        });
+
+        closeHistoricoModalBtn.addEventListener('click', () => {
+            historicoFeriasModal.classList.add('hidden');
+        });
+
+        // Configuração de autenticação e carregamento de dados
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                userId = user.uid;
+                userIdDisplay.textContent = userId;
+            } else if (initialAuthToken) {
+                try {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } catch (error) {
+                    console.error("Erro ao autenticar com token:", error);
+                    await signInAnonymously(auth);
+                }
+            } else {
+                await signInAnonymously(auth);
+            }
+
+            // Apenas carrega os dados e escuta por mudanças após a autenticação
+            const docRef = doc(db, 'artifacts', appId, 'users', userId, 'controle-ferias', 'dados');
+            onSnapshot(docRef, (doc) => {
+                if (doc.exists()) {
+                    // Desserializa os dados ao carregar
+                    const data = JSON.parse(doc.data().data);
+                    funcionarios = data;
+                } else {
+                    funcionarios = []; // Inicia com um array vazio se o documento não existir
+                }
+                
+                // Esconde o carregamento e mostra a tabela
+                loading.classList.add('hidden');
+                tabelaPrincipal.classList.remove('hidden');
+
+                // Atualiza a UI
+                atualizarTabela();
+                atualizarSelectColaboradores();
+            }, (error) => {
+                console.error("Erro ao carregar dados em tempo real: ", error);
+                showMessage("Erro ao carregar dados. Por favor, recarregue a página.");
+            });
+        });
+    </script>
+
+</body>
+</html>
