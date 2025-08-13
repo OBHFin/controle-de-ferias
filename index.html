@@ -3,21 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Férias</title>
-    <!-- Tailwind CSS for styling -->
+    <title>Dashboard de Férias</title>
+    <!-- Tailwind CSS para estilização e Inter para a fonte -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
+            background-color: #0b1f3c; /* Azul escuro predominante */
         }
-        .container {
-            max-width: 1200px;
+        .dashboard-container {
+            max-width: 1400px;
+        }
+        .card {
+            background-color: #1a2a4b; /* Azul mais claro para os cards */
         }
         .modal {
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.7);
             transition: opacity 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #10b981; /* Verde vibrante */
+            border-color: #10b981;
+        }
+        .btn-primary:hover {
+            background-color: #059669; /* Verde mais escuro no hover */
+        }
+        .btn-secondary {
+            background-color: #4a5568; /* Cinza para botões secundários */
+        }
+        .btn-secondary:hover {
+            background-color: #2d3748;
         }
         @media print {
             body * {
@@ -35,104 +51,120 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+<body class="flex flex-col items-center min-h-screen p-4 text-white">
 
-    <div class="container mx-auto p-8 bg-white shadow-xl rounded-lg">
-        <div class="flex justify-between items-center mb-8">
-            <h1 class="text-4xl font-bold text-gray-800">Controle de Férias</h1>
-            <div id="user-id" class="text-sm text-gray-500 bg-gray-100 p-2 rounded-md">ID do Usuário: <span class="font-mono">Carregando...</span></div>
+    <div class="dashboard-container w-full mx-auto p-8 pt-0">
+        <!-- Cabeçalho do Dashboard -->
+        <header class="flex justify-between items-center mb-8 p-6 bg-gray-800 rounded-b-xl shadow-xl -mx-8 -mt-8">
+            <h1 class="text-4xl font-bold text-white">Dashboard de Férias</h1>
+            <div id="user-id" class="text-xs text-gray-400 bg-gray-700 p-2 rounded-md font-mono">ID do Usuário: <span class="font-bold">Carregando...</span></div>
+        </header>
+
+        <!-- Cards de Resumo -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="card p-6 rounded-lg shadow-lg border border-gray-700">
+                <h2 class="text-xl font-semibold text-gray-200">Total de Colaboradores</h2>
+                <p id="total-colaboradores" class="text-5xl font-bold text-green-400 mt-4">0</p>
+            </div>
+            <div class="card p-6 rounded-lg shadow-lg border border-gray-700">
+                <h2 class="text-xl font-semibold text-gray-200">Férias Agendadas este Ano</h2>
+                <p id="ferias-ano-atual" class="text-5xl font-bold text-green-400 mt-4">0</p>
+            </div>
+            <div class="card p-6 rounded-lg shadow-lg border border-gray-700">
+                <h2 class="text-xl font-semibold text-gray-200">Férias Vencidas</h2>
+                <p id="ferias-vencidas" class="text-5xl font-bold text-red-500 mt-4">0</p>
+            </div>
         </div>
 
-        <!-- Seção de Formulários -->
-        <div class="grid md:grid-cols-2 gap-8 mb-8">
+        <!-- Formulários de Ações -->
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
             <!-- Formulário para Adicionar/Editar Funcionário -->
-            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
-                <h2 class="text-2xl font-semibold text-gray-700 mb-4" id="form-colaborador-titulo">Adicionar Colaborador</h2>
+            <div class="card p-6 rounded-lg shadow-lg border border-gray-700">
+                <h2 class="text-2xl font-semibold text-gray-200 mb-4" id="form-colaborador-titulo">Adicionar Colaborador</h2>
                 <form id="form-adicionar-colaborador" class="space-y-4">
                     <input type="hidden" id="colaborador-id-edit">
                     <div>
-                        <label for="nome" class="block text-sm font-medium text-gray-700">Nome:</label>
-                        <input type="text" id="nome" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required>
+                        <label for="nome" class="block text-sm font-medium text-gray-400">Nome:</label>
+                        <input type="text" id="nome" class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required>
                     </div>
                     <div>
-                        <label for="admissao" class="block text-sm font-medium text-gray-700">Data de Admissão:</label>
-                        <input type="date" id="admissao" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required>
+                        <label for="admissao" class="block text-sm font-medium text-gray-400">Data de Admissão:</label>
+                        <input type="date" id="admissao" class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required>
                     </div>
                     <div class="flex space-x-2">
-                        <button type="submit" id="btn-salvar-colaborador" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">Adicionar</button>
-                        <button type="button" id="btn-cancelar-edicao" class="w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out hidden">Cancelar</button>
+                        <button type="submit" id="btn-salvar-colaborador" class="w-full py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white btn-primary transition duration-150 ease-in-out">Adicionar</button>
+                        <button type="button" id="btn-cancelar-edicao" class="w-full py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white btn-secondary transition duration-150 ease-in-out hidden">Cancelar</button>
                     </div>
                 </form>
             </div>
 
             <!-- Formulário para Adicionar Férias -->
-            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
-                <h2 class="text-2xl font-semibold text-gray-700 mb-4">Agendar Férias</h2>
+            <div class="card p-6 rounded-lg shadow-lg border border-gray-700">
+                <h2 class="text-2xl font-semibold text-gray-200 mb-4">Agendar Férias</h2>
                 <form id="form-adicionar-ferias" class="space-y-4">
                     <div>
-                        <label for="colaborador-select" class="block text-sm font-medium text-gray-700">Colaborador:</label>
-                        <select id="colaborador-select" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required>
+                        <label for="colaborador-select" class="block text-sm font-medium text-gray-400">Colaborador:</label>
+                        <select id="colaborador-select" class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required>
                             <option value="">Selecione...</option>
                         </select>
                     </div>
                     <div>
-                        <label for="inicio-ferias" class="block text-sm font-medium text-gray-700">Início das Férias:</label>
-                        <input type="date" id="inicio-ferias" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required>
+                        <label for="inicio-ferias" class="block text-sm font-medium text-gray-400">Início das Férias:</label>
+                        <input type="date" id="inicio-ferias" class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required>
                     </div>
                     <div>
-                        <label for="dias-gozados" class="block text-sm font-medium text-gray-700">Dias Gozados:</label>
-                        <input type="number" id="dias-gozados" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required min="0" value="0">
+                        <label for="dias-gozados" class="block text-sm font-medium text-gray-400">Dias Gozados:</label>
+                        <input type="number" id="dias-gozados" class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required min="0" value="0">
                     </div>
                     <div>
-                        <label for="dias-vendidos" class="block text-sm font-medium text-gray-700">Dias Vendidos:</label>
-                        <input type="number" id="dias-vendidos" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required min="0" value="0">
+                        <label for="dias-vendidos" class="block text-sm font-medium text-gray-400">Dias Vendidos:</label>
+                        <input type="number" id="dias-vendidos" class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required min="0" value="0">
                     </div>
-                    <button type="submit" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">Agendar</button>
+                    <button type="submit" class="w-full py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white btn-primary transition duration-150 ease-in-out">Agendar</button>
                 </form>
             </div>
         </div>
 
         <!-- Seção de Filtro e Relatório -->
-        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-8">
-            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Consultar Relatório Geral</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="card p-6 rounded-lg shadow-lg border border-gray-700 mb-8">
+            <h2 class="text-2xl font-semibold text-gray-200 mb-4">Relatório Geral</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
-                    <label for="filtro-ano" class="block text-sm font-medium text-gray-700">Ano:</label>
-                    <select id="filtro-ano" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                    <label for="filtro-ano" class="block text-sm font-medium text-gray-400">Ano:</label>
+                    <select id="filtro-ano" class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border">
                         <option value="">Todos</option>
                     </select>
                 </div>
                 <div>
-                    <label for="filtro-mes" class="block text-sm font-medium text-gray-700">Mês:</label>
-                    <select id="filtro-mes" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                    <label for="filtro-mes" class="block text-sm font-medium text-gray-400">Mês:</label>
+                    <select id="filtro-mes" class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border">
                         <option value="">Todos</option>
                     </select>
                 </div>
-                <div class="flex items-end space-x-2 mt-4 md:mt-0">
-                    <button id="btn-filtrar" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">Gerar Relatório</button>
-                    <button id="btn-imprimir" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out">Imprimir</button>
+                <div class="flex items-end space-x-2 col-span-2">
+                    <button id="btn-filtrar" class="w-full py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white btn-primary transition duration-150 ease-in-out">Gerar Relatório</button>
+                    <button id="btn-imprimir" class="w-full py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white btn-secondary transition duration-150 ease-in-out">Imprimir</button>
                 </div>
             </div>
         </div>
 
         <!-- Tabela de Controle -->
-        <div id="relatorio-print" class="overflow-x-auto rounded-lg shadow-lg">
-            <div id="loading" class="text-center p-4 text-gray-500">Carregando dados...</div>
-            <table class="min-w-full divide-y divide-gray-200 bg-white hidden" id="tabela-principal">
-                <thead class="bg-gray-50">
+        <div id="relatorio-print" class="overflow-x-auto rounded-lg shadow-lg border border-gray-700">
+            <div id="loading" class="text-center p-4 text-gray-400">A carregar dados...</div>
+            <table class="min-w-full divide-y divide-gray-700 bg-gray-800 hidden" id="tabela-principal">
+                <thead class="bg-gray-700">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Admissão</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Período Aquisitivo</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Período Concessivo</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lembrete Vencimento</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dias Gozados</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dias Vendidos</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Saldo a Gozar</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Nome</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Admissão</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Período Aquisitivo</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Período Concessivo</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Saldo a Gozar</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Lembrete Vencimento</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Férias Agendadas</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Ações</th>
                     </tr>
                 </thead>
-                <tbody id="tabela-corpo" class="bg-white divide-y divide-gray-200">
+                <tbody id="tabela-corpo" class="divide-y divide-gray-700">
                     <!-- Linhas da tabela serão inseridas aqui via JavaScript -->
                 </tbody>
             </table>
@@ -140,40 +172,41 @@
 
     </div>
 
+    <!-- Modals -->
     <!-- Modal de Confirmação para Deletar Colaborador -->
     <div id="delete-colaborador-modal" class="modal fixed inset-0 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg shadow-xl p-6 w-96">
+        <div class="bg-gray-800 text-white rounded-lg shadow-xl p-6 w-96 border border-gray-700">
             <h3 class="text-xl font-semibold mb-4">Confirmação de Exclusão</h3>
-            <p>Você tem certeza que deseja deletar o colaborador <span id="colaborador-nome-delete" class="font-bold"></span>?</p>
+            <p>Tem a certeza que deseja deletar o colaborador <span id="colaborador-nome-delete" class="font-bold"></span>?</p>
             <div class="flex justify-end mt-6 space-x-2">
-                <button id="cancel-delete-colaborador" class="py-2 px-4 bg-gray-200 rounded-md hover:bg-gray-300">Cancelar</button>
-                <button id="confirm-delete-colaborador" class="py-2 px-4 bg-red-600 text-white rounded-md hover:bg-red-700">Deletar</button>
+                <button id="cancel-delete-colaborador" class="py-2 px-4 rounded-md btn-secondary hover:bg-gray-600">Cancelar</button>
+                <button id="confirm-delete-colaborador" class="py-2 px-4 rounded-md bg-red-600 hover:bg-red-700">Deletar</button>
             </div>
         </div>
     </div>
 
     <!-- Modal para Editar Férias -->
     <div id="edit-ferias-modal" class="modal fixed inset-0 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg shadow-xl p-6 w-96">
+        <div class="bg-gray-800 text-white rounded-lg shadow-xl p-6 w-96 border border-gray-700">
             <h3 class="text-xl font-semibold mb-4">Editar Férias</h3>
             <form id="form-editar-ferias" class="space-y-4">
                 <input type="hidden" id="edit-ferias-colaborador-id">
                 <input type="hidden" id="edit-ferias-id">
                 <div>
-                    <label for="edit-inicio-ferias" class="block text-sm font-medium text-gray-700">Início das Férias:</label>
-                    <input type="date" id="edit-inicio-ferias" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required>
+                    <label for="edit-inicio-ferias" class="block text-sm font-medium text-gray-400">Início das Férias:</label>
+                    <input type="date" id="edit-inicio-ferias" class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required>
                 </div>
                 <div>
-                    <label for="edit-dias-gozados" class="block text-sm font-medium text-gray-700">Dias Gozados:</label>
-                    <input type="number" id="edit-dias-gozados" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required min="0">
+                    <label for="edit-dias-gozados" class="block text-sm font-medium text-gray-400">Dias Gozados:</label>
+                    <input type="number" id="edit-dias-gozados" class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required min="0">
                 </div>
                 <div>
-                    <label for="edit-dias-vendidos" class="block text-sm font-medium text-gray-700">Dias Vendidos:</label>
-                    <input type="number" id="edit-dias-vendidos" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required min="0">
+                    <label for="edit-dias-vendidos" class="block text-sm font-medium text-gray-400">Dias Vendidos:</label>
+                    <input type="number" id="edit-dias-vendidos" class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border" required min="0">
                 </div>
                 <div class="flex justify-end mt-6 space-x-2">
-                    <button type="button" id="cancel-edit-ferias" class="py-2 px-4 bg-gray-200 rounded-md hover:bg-gray-300">Cancelar</button>
-                    <button type="submit" class="py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Salvar Alterações</button>
+                    <button type="button" id="cancel-edit-ferias" class="py-2 px-4 rounded-md btn-secondary hover:bg-gray-600">Cancelar</button>
+                    <button type="submit" class="py-2 px-4 rounded-md text-white btn-primary">Salvar Alterações</button>
                 </div>
             </form>
         </div>
@@ -181,41 +214,41 @@
     
     <!-- Modal de Confirmação para Deletar Férias -->
     <div id="delete-ferias-modal" class="modal fixed inset-0 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg shadow-xl p-6 w-96">
+        <div class="bg-gray-800 text-white rounded-lg shadow-xl p-6 w-96 border border-gray-700">
             <h3 class="text-xl font-semibold mb-4">Confirmação de Exclusão</h3>
-            <p>Você tem certeza que deseja deletar estas férias?</p>
+            <p>Tem a certeza que deseja deletar estas férias?</p>
             <div class="flex justify-end mt-6 space-x-2">
-                <button id="cancel-delete-ferias" class="py-2 px-4 bg-gray-200 rounded-md hover:bg-gray-300">Cancelar</button>
-                <button id="confirm-delete-ferias" class="py-2 px-4 bg-red-600 text-white rounded-md hover:bg-red-700">Deletar</button>
+                <button id="cancel-delete-ferias" class="py-2 px-4 rounded-md btn-secondary hover:bg-gray-600">Cancelar</button>
+                <button id="confirm-delete-ferias" class="py-2 px-4 rounded-md bg-red-600 hover:bg-red-700">Deletar</button>
             </div>
         </div>
     </div>
     
     <!-- Modal para Relatório Histórico de Férias por Colaborador -->
     <div id="historico-ferias-modal" class="modal fixed inset-0 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg shadow-xl p-6 w-11/12 max-w-2xl">
+        <div class="bg-gray-800 text-white rounded-lg shadow-xl p-6 w-11/12 max-w-2xl border border-gray-700">
             <h3 class="text-xl font-semibold mb-4">Histórico de Férias de <span id="historico-colaborador-nome" class="font-bold"></span></h3>
-            <div class="overflow-x-auto rounded-lg border border-gray-200">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+            <div class="overflow-x-auto rounded-lg border border-gray-700">
+                <table class="min-w-full divide-y divide-gray-700">
+                    <thead class="bg-gray-700">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Período</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dias Gozados</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dias Vendidos</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Período</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Dias Gozados</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Dias Vendidos</th>
                         </tr>
                     </thead>
-                    <tbody id="historico-ferias-corpo" class="bg-white divide-y divide-gray-200">
+                    <tbody id="historico-ferias-corpo" class="divide-y divide-gray-700">
                         <!-- Linhas da tabela serão inseridas aqui via JavaScript -->
                     </tbody>
                 </table>
             </div>
             <div class="flex justify-end mt-6">
-                <button id="close-historico-modal" class="py-2 px-4 bg-gray-200 rounded-md hover:bg-gray-300">Fechar</button>
+                <button id="close-historico-modal" class="py-2 px-4 rounded-md btn-secondary hover:bg-gray-600">Fechar</button>
             </div>
         </div>
     </div>
 
-    <!-- Message Box -->
+    <!-- Caixa de Mensagens -->
     <div id="message-box" class="fixed bottom-4 right-4 bg-gray-800 text-white p-4 rounded-lg shadow-xl hidden transition-opacity duration-300">
         <p id="message-text"></p>
     </div>
@@ -226,36 +259,19 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // ATENÇÃO: AS SUAS CREDENCIAIS DO FIREBASE JÁ FORAM INSERIDAS ABAIXO.
-        // O código foi atualizado para usar a variável global __firebase_config, que é a forma correta no ambiente.
-        // const firebaseConfig = {
-        //      apiKey: "AIzaSyAdKRf3ybykrrNZrsgnmPkgcIuCpYfHqdQ",
-        //      authDomain: "controle-de-ferias-31b46.firebaseapp.com",
-        //      projectId: "controle-de-ferias-31b46",
-        //      storageBucket: "controle-de-ferias-31b46.firebasestorage.app",
-        //      messagingSenderId: "120318916633",
-        //      appId: "1:120318916633:web:581b064111ef9e2b41d288"
-        // };
+        // === INICIALIZAÇÃO DO FIREBASE E VARIÁVEIS GLOBAIS ===
         
-        // Uso da variável global fornecida pelo ambiente, com fallback
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "AIzaSyAdKRf3ybykrrNZrsgnmPkgcIuCpYfHqdQ",
-            authDomain: "controle-de-ferias-31b46.firebaseapp.com",
-            projectId: "controle-de-ferias-31b46",
-            storageBucket: "controle-de-ferias-31b46.firebasestorage.app",
-            messagingSenderId: "120318916633",
-            appId: "1:120318916633:web:581b064111ef9e2b41d288"
-        };
-        
+        // As credenciais do Firebase são fornecidas pelo ambiente. Usamos um fallback seguro.
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
-        // Inicialização do Firebase
+        // Inicializa os serviços do Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // Referências aos elementos do DOM
+        // Referências aos elementos do DOM para interação
         const formColaborador = document.getElementById('form-adicionar-colaborador');
         const formFerias = document.getElementById('form-adicionar-ferias');
         const tabelaCorpo = document.getElementById('tabela-corpo');
@@ -270,7 +286,12 @@
         const loading = document.getElementById('loading');
         const userIdDisplay = document.querySelector('#user-id span');
 
-        // Referências para funcionalidade de edição e deleção de colaborador
+        // Referências para os cards de resumo do dashboard
+        const totalColaboradoresDisplay = document.getElementById('total-colaboradores');
+        const feriasAnoAtualDisplay = document.getElementById('ferias-ano-atual');
+        const feriasVencidasDisplay = document.getElementById('ferias-vencidas');
+
+        // Referências para a funcionalidade de edição e deleção de colaborador
         const formColaboradorTitulo = document.getElementById('form-colaborador-titulo');
         const colaboradorIdEdit = document.getElementById('colaborador-id-edit');
         const nomeInput = document.getElementById('nome');
@@ -282,7 +303,7 @@
         const confirmDeleteColaboradorBtn = document.getElementById('confirm-delete-colaborador');
         const cancelDeleteColaboradorBtn = document.getElementById('cancel-delete-colaborador');
 
-        // Referências para funcionalidade de edição e deleção de férias
+        // Referências para a funcionalidade de edição e deleção de férias
         const diasGozadosInput = document.getElementById('dias-gozados');
         const diasVendidosInput = document.getElementById('dias-vendidos');
         const editFeriasModal = document.getElementById('edit-ferias-modal');
@@ -303,10 +324,16 @@
         const historicoFeriasCorpo = document.getElementById('historico-ferias-corpo');
         const closeHistoricoModalBtn = document.getElementById('close-historico-modal');
 
+        // Variáveis de estado da aplicação
         let funcionarios = [];
         let userId = null;
 
-        // Exibe uma mensagem na tela
+        // === FUNÇÕES AUXILIARES E LÓGICA DA APLICAÇÃO ===
+
+        /**
+         * Exibe uma mensagem temporária na caixa de mensagens no canto inferior direito.
+         * @param {string} text - O texto a ser exibido.
+         */
         function showMessage(text) {
             messageText.textContent = text;
             messageBox.classList.remove('hidden');
@@ -317,7 +344,11 @@
             }, 3000);
         }
 
-        // Função para salvar os dados no Firestore
+        /**
+         * Salva os dados dos funcionários no Firestore.
+         * O documento é salvo no caminho 'artifacts/{appId}/users/{userId}/controle-ferias/dados'
+         * para garantir que cada usuário tenha os seus dados isolados e privados.
+         */
         async function saveData() {
             if (!userId) {
                 showMessage("Erro: Usuário não autenticado.");
@@ -325,7 +356,7 @@
             }
             const docRef = doc(db, 'artifacts', appId, 'users', userId, 'controle-ferias', 'dados');
             try {
-                // Serializa os dados para JSON para lidar com estruturas complexas
+                // Serializa os dados para JSON para lidar com estruturas complexas e salvar no Firestore
                 const serializedData = JSON.stringify(funcionarios);
                 await setDoc(docRef, { data: serializedData });
             } catch (error) {
@@ -334,7 +365,11 @@
             }
         }
 
-        // Função para calcular os períodos aquisitivos e concessivos
+        /**
+         * Calcula os períodos aquisitivo e concessivo a partir da data de admissão.
+         * @param {string} dataAdmissao - Data de admissão no formato YYYY-MM-DD.
+         * @returns {object} - Objeto com as datas dos períodos.
+         */
         function calcularPeriodos(dataAdmissao) {
             const admissao = new Date(dataAdmissao);
             const aquisitivoFim = new Date(admissao);
@@ -352,7 +387,31 @@
             };
         }
 
-        // Atualiza a tabela com os dados dos funcionários
+        /**
+         * Atualiza os cards de resumo com as métricas do dashboard.
+         */
+        function atualizarDashboardCards() {
+            const hoje = new Date();
+            const anoAtual = hoje.getFullYear();
+
+            const totalColaboradores = funcionarios.length;
+            const feriasAnoAtual = funcionarios.reduce((acc, curr) => {
+                return acc + curr.ferias.filter(f => new Date(f.dataInicio).getFullYear() === anoAtual).length;
+            }, 0);
+            const feriasVencidas = funcionarios.filter(func => {
+                const { concessivoFim } = calcularPeriodos(func.admissao);
+                return hoje > concessivoFim;
+            }).length;
+
+            totalColaboradoresDisplay.textContent = totalColaboradores;
+            feriasAnoAtualDisplay.textContent = feriasAnoAtual;
+            feriasVencidasDisplay.textContent = feriasVencidas;
+        }
+
+        /**
+         * Atualiza a tabela com os dados dos funcionários, aplicando filtros se existirem.
+         * @param {Array<Object>} dadosParaExibir - O array de funcionários a ser exibido.
+         */
         function atualizarTabela(dadosParaExibir = funcionarios) {
             tabelaCorpo.innerHTML = '';
             
@@ -364,6 +423,9 @@
             const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
             filtroMes.innerHTML = '<option value="">Todos</option>' + meses.map((mes, index) => `<option value="${index + 1}">${mes}</option>`).join('');
 
+            const formatter = new Intl.DateTimeFormat('pt-BR');
+
+            // Itera sobre os dados para criar as linhas da tabela
             dadosParaExibir.forEach(func => {
                 const { aquisitivoInicio, aquisitivoFim, concessivoFim } = calcularPeriodos(func.admissao);
                 const diasGozados = func.ferias.reduce((acc, curr) => acc + (curr.diasGozados || 0), 0);
@@ -371,24 +433,20 @@
                 const saldo = 30 - diasGozados - diasVendidos;
 
                 const hoje = new Date();
-                const lembreteVencimento = hoje > concessivoFim;
+                const lembreteVencimento = hoje > concessivoFim ? 'VENCIDO!' : formatter.format(concessivoFim);
+                const vencidoClass = hoje > concessivoFim ? 'font-bold text-red-500' : 'text-gray-400';
 
-                const row = document.createElement('tr');
-                row.className = 'hover:bg-gray-50';
-
-                // Usando o Intl.DateTimeFormat para formatar datas para o Brasil
-                const formatter = new Intl.DateTimeFormat('pt-BR');
-                
+                // Cria o HTML para as férias agendadas para cada funcionário
                 let feriasAgendadasHtml = `<div class="flex flex-col space-y-2">`;
                 if (func.ferias && func.ferias.length > 0) {
                     const feriasOrdenadas = [...func.ferias].sort((a, b) => new Date(a.dataInicio) - new Date(b.dataInicio));
                     feriasOrdenadas.forEach(feriasItem => {
                         feriasAgendadasHtml += `
-                            <div class="flex items-center justify-between p-2 bg-gray-100 rounded-md">
-                                <span class="text-xs font-medium text-gray-700">De ${formatter.format(new Date(feriasItem.dataInicio))} (${feriasItem.diasGozados || 0} dias gozados, ${feriasItem.diasVendidos || 0} dias vendidos)</span>
+                            <div class="flex items-center justify-between p-2 bg-gray-700 rounded-md">
+                                <span class="text-xs font-medium text-gray-200">De ${formatter.format(new Date(feriasItem.dataInicio))} (${feriasItem.diasGozados || 0} gozados, ${feriasItem.diasVendidos || 0} vendidos)</span>
                                 <div>
-                                    <button data-colaborador-id="${func.id}" data-ferias-id="${feriasItem.id}" class="btn-editar-ferias text-indigo-600 hover:text-indigo-900 mr-2 text-sm">Editar</button>
-                                    <button data-colaborador-id="${func.id}" data-ferias-id="${feriasItem.id}" class="btn-deletar-ferias text-red-600 hover:text-red-900 text-sm">Deletar</button>
+                                    <button data-colaborador-id="${func.id}" data-ferias-id="${feriasItem.id}" class="btn-editar-ferias text-green-500 hover:text-green-300 mr-2 text-sm">Editar</button>
+                                    <button data-colaborador-id="${func.id}" data-ferias-id="${feriasItem.id}" class="btn-deletar-ferias text-red-500 hover:text-red-300 text-sm">Deletar</button>
                                 </div>
                             </div>
                         `;
@@ -399,25 +457,27 @@
                 feriasAgendadasHtml += `</div>`;
 
 
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-700';
+
                 row.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${func.nome}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatter.format(new Date(func.admissao))}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatter.format(aquisitivoInicio)} a ${formatter.format(aquisitivoFim)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatter.format(concessivoFim)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 ${lembreteVencimento ? 'font-bold text-red-500' : ''}">${lembreteVencimento ? 'VENCIDO!' : formatter.format(concessivoFim)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${diasGozados}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${diasVendidos}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-bold">${saldo}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">${func.nome}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">${formatter.format(new Date(func.admissao))}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">${formatter.format(aquisitivoInicio)} a ${formatter.format(aquisitivoFim)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">${formatter.format(concessivoFim)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-green-400">${saldo}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm ${vencidoClass}">${lembreteVencimento}</td>
+                    <td class="px-6 py-4 text-sm text-gray-400">${feriasAgendadasHtml}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button data-id="${func.id}" class="btn-ver-historico text-green-600 hover:text-green-900 mr-2">Histórico</button>
-                        <button data-id="${func.id}" class="btn-editar-colaborador text-indigo-600 hover:text-indigo-900 mr-2">Editar</button>
-                        <button data-id="${func.id}" class="btn-deletar-colaborador text-red-600 hover:text-red-900">Deletar</button>
+                        <button data-id="${func.id}" class="btn-ver-historico text-green-500 hover:text-green-300 mr-2">Histórico</button>
+                        <button data-id="${func.id}" class="btn-editar-colaborador text-blue-500 hover:text-blue-300 mr-2">Editar</button>
+                        <button data-id="${func.id}" class="btn-deletar-colaborador text-red-500 hover:text-red-300">Deletar</button>
                     </td>
                 `;
                 tabelaCorpo.appendChild(row);
             });
 
-            // Adiciona listeners para os botões de editar, deletar e ver histórico
+            // Adiciona os event listeners após o preenchimento da tabela
             document.querySelectorAll('.btn-editar-colaborador').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const id = e.target.dataset.id;
@@ -452,14 +512,13 @@
                     if (funcionario) {
                         historicoColaboradorNome.textContent = funcionario.nome;
                         historicoFeriasCorpo.innerHTML = '';
-                        const formatter = new Intl.DateTimeFormat('pt-BR');
                         funcionario.ferias.forEach(feriasItem => {
                             const row = document.createElement('tr');
-                            row.className = 'hover:bg-gray-50';
+                            row.className = 'hover:bg-gray-700';
                             row.innerHTML = `
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${formatter.format(new Date(feriasItem.dataInicio))}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${feriasItem.diasGozados || 0}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${feriasItem.diasVendidos || 0}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-200">${formatter.format(new Date(feriasItem.dataInicio))}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">${feriasItem.diasGozados || 0}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">${feriasItem.diasVendidos || 0}</td>
                             `;
                             historicoFeriasCorpo.appendChild(row);
                         });
@@ -468,7 +527,6 @@
                 });
             });
             
-            // Adiciona listeners para os botões de editar e deletar férias
             document.querySelectorAll('.btn-editar-ferias').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const colaboradorId = e.target.dataset.colaboradorId;
@@ -500,7 +558,9 @@
             });
         }
 
-        // Atualiza o dropdown de seleção de colaborador
+        /**
+         * Atualiza o dropdown de seleção de colaborador para o agendamento de férias.
+         */
         function atualizarSelectColaboradores() {
             colaboradorSelect.innerHTML = '<option value="">Selecione...</option>';
             funcionarios.forEach(func => {
@@ -511,7 +571,9 @@
             });
         }
 
-        // Adiciona ou edita um colaborador
+        // === EVENT LISTENERS ===
+
+        // Listener para o formulário de adicionar/editar colaborador
         formColaborador.addEventListener('submit', (e) => {
             e.preventDefault();
             const id = colaboradorIdEdit.value;
@@ -538,11 +600,10 @@
             }
 
             saveData();
-            formColaborador.reset();
             resetFormularioColaborador();
         });
 
-        // Reseta o formulário para o modo de adicionar
+        // Reseta o formulário do colaborador para o estado inicial
         function resetFormularioColaborador() {
             formColaboradorTitulo.textContent = 'Adicionar Colaborador';
             btnSalvarColaborador.textContent = 'Adicionar';
@@ -553,7 +614,7 @@
 
         btnCancelarEdicao.addEventListener('click', resetFormularioColaborador);
 
-        // Adiciona um novo agendamento de férias
+        // Listener para o formulário de agendar férias
         formFerias.addEventListener('submit', (e) => {
             e.preventDefault();
             const colaboradorId = document.getElementById('colaborador-select').value;
@@ -574,13 +635,13 @@
                 }
 
                 funcionario.ferias.push({
-                    id: crypto.randomUUID(), // Adiciona um ID único para a entrada de férias
+                    id: crypto.randomUUID(),
                     dataInicio,
                     diasGozados,
                     diasVendidos
                 });
                 
-                saveData(); // Salva os dados após a alteração
+                saveData();
                 formFerias.reset();
                 showMessage(`Férias agendadas para ${funcionario.nome}.`);
             } else {
@@ -588,7 +649,7 @@
             }
         });
 
-        // Filtra a tabela para o relatório
+        // Listener para o botão de filtrar/gerar relatório
         btnFiltrar.addEventListener('click', () => {
             const ano = filtroAno.value;
             const mes = filtroMes.value;
@@ -610,21 +671,22 @@
                     return anoCorresponde && mesCorresponde;
                 });
 
+                // Se houver férias filtradas, retorna o funcionário com essas férias.
                 if (feriasFiltradas.length > 0) {
                     return { ...func, ferias: feriasFiltradas };
                 }
                 return null;
-            }).filter(Boolean); // Remove funcionários sem férias no período
+            }).filter(Boolean); // Remove funcionários sem férias no período filtrado
 
             atualizarTabela(dadosFiltrados);
         });
 
-        // Imprime o relatório
+        // Listener para o botão de imprimir o relatório
         btnImprimir.addEventListener('click', () => {
             window.print();
         });
 
-        // Lida com a deleção de colaborador
+        // Lógica dos modais de confirmação e edição
         confirmDeleteColaboradorBtn.addEventListener('click', () => {
             const id = confirmDeleteColaboradorBtn.dataset.id;
             funcionarios = funcionarios.filter(f => f.id !== id);
@@ -637,7 +699,6 @@
             deleteColaboradorModal.classList.add('hidden');
         });
         
-        // Lida com a edição de férias
         formEditarFerias.addEventListener('submit', (e) => {
             e.preventDefault();
             const colaboradorId = editFeriasColaboradorId.value;
@@ -649,10 +710,11 @@
             const funcionario = funcionarios.find(f => f.id === colaboradorId);
             if (funcionario) {
                 const ferias = funcionario.ferias.find(f => f.id === feriasId);
+                
+                // Calcula o saldo de férias sem contar a entrada que está sendo editada
                 const diasTotaisGozadosExcetoEste = funcionario.ferias.filter(f => f.id !== feriasId).reduce((acc, curr) => acc + (curr.diasGozados || 0), 0);
                 const diasTotaisVendidosExcetoEste = funcionario.ferias.filter(f => f.id !== feriasId).reduce((acc, curr) => acc + (curr.diasVendidos || 0), 0);
                 const saldoDisponivel = 30 - diasTotaisGozadosExcetoEste - diasTotaisVendidosExcetoEste;
-
                 const totalDias = diasGozados + diasVendidos;
 
                 if (totalDias > saldoDisponivel) {
@@ -675,7 +737,6 @@
             editFeriasModal.classList.add('hidden');
         });
 
-        // Lida com a deleção de férias
         confirmDeleteFeriasBtn.addEventListener('click', () => {
             const colaboradorId = confirmDeleteFeriasBtn.dataset.colaboradorId;
             const feriasId = confirmDeleteFeriasBtn.dataset.feriasId;
@@ -697,7 +758,9 @@
             historicoFeriasModal.classList.add('hidden');
         });
 
-        // Configuração de autenticação e carregamento de dados
+        // === AUTENTICAÇÃO E CARREGAMENTO INICIAL DE DADOS ===
+        
+        // Listener de estado de autenticação. É o ponto de entrada para o carregamento de dados.
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 userId = user.uid;
@@ -713,7 +776,7 @@
                 await signInAnonymously(auth);
             }
 
-            // Apenas carrega os dados e escuta por mudanças após a autenticação
+            // O onSnapshot é um listener em tempo real. Ele será ativado sempre que os dados mudarem no Firestore.
             const docRef = doc(db, 'artifacts', appId, 'users', userId, 'controle-ferias', 'dados');
             onSnapshot(docRef, (doc) => {
                 if (doc.exists()) {
@@ -721,18 +784,19 @@
                     const data = JSON.parse(doc.data().data);
                     funcionarios = data;
                 } else {
-                    funcionarios = []; // Inicia com um array vazio se o documento não existir
+                    funcionarios = [];
                 }
                 
                 // Esconde o carregamento e mostra a tabela
                 loading.classList.add('hidden');
                 tabelaPrincipal.classList.remove('hidden');
 
-                // Atualiza a UI
+                // Atualiza a UI com os dados mais recentes
                 atualizarTabela();
                 atualizarSelectColaboradores();
+                atualizarDashboardCards();
             }, (error) => {
-                console.error("Erro ao carregar dados em tempo real: ", error);
+                console.oneerror("Erro ao carregar dados em tempo real: ", error);
                 showMessage("Erro ao carregar dados. Por favor, recarregue a página.");
             });
         });
